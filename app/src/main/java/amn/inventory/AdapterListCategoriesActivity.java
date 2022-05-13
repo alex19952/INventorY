@@ -16,11 +16,16 @@ public class AdapterListCategoriesActivity extends RecyclerView.Adapter<AdapterL
     }
 
     public static class ListCategoriesiewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener{
+
         TextView tittle;
+        View layout;
+
         ListCategoriesiewHolder(View itemView){
+
             super(itemView);
+            layout = (View)itemView.findViewById(R.id.rowOfListCategoriesAdapter);
             tittle = (TextView)itemView.findViewById(R.id.textTittleInRowOfListCategories);
-            tittle.setOnClickListener(this);
+            layout.setOnClickListener(this);
         }
 
         @Override
