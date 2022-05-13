@@ -1,13 +1,13 @@
 package amn.inventory;
 
-import android.content.Intent;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 class SQLiteHelper extends SQLiteOpenHelper {
 
@@ -15,34 +15,27 @@ class SQLiteHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
     private static final String TABLE_DATA_NAME = "MTRs";
     private static final String TABLE_SETTINGS_NAME = "Settings";
-    private String DB_PATH;
-    private String[] COLUMNS_NAMES = {
-            "ID_FOR_SEARCH",        //  0   id
-            "CODE",                 //  1   код
-            "DATE",                 //  2   дата
-            "INV_NUM",              //  3   инвентарник
-            "NAME_MTR",             //  4   наименование
-            "QUANTITY",             //  5   количество
-            "SCANNED_QUANTITY",     //  6   количество отсканированных
-            "PRICE",                //  7   цена
-            "PLACE",                //  8   местонахождение
-            "RESP_PERS",            //  9   ответстенный
-            "DESCRIPTION"};         //  10  описание
+
+    private static final String ID_FOR_SEARCH = "ID_FOR_SEARCH";
+    private static final String NAME_MTR = "NAME_MTR";
+    private static final String QUANTITY = "QUANTITY";
+    private static final String SCANNED_QUANTITY = "SCANNED_QUANTITY";
+    private static final String CATEGORY = "CATEGORY";
+    private static final String DESCRIPTION = "DESCRIPTION";
+    private Context context;
+
+
     private String ADDITIONAL_COLUMNS = ", PLACE TEXT";
 
 
     SQLiteHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
+        this.context = context;
     }
 
 
     @Override
-    public void onCreate(SQLiteDatabase db) { //FIXME сделать пустым
-        db.execSQL("CREATE TABLE " + TABLE_DATA_NAME + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "ID_FOR_SEARCH INTEGER, "
-                + "NAME_MTR TEXT, "
-                + "QUANTITY INTEGER, "
-                + "PLACE TEXT);");
+    public void onCreate(SQLiteDatabase db) {
     }
 
 
@@ -50,48 +43,98 @@ class SQLiteHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public void cteateTableData (SQLiteDatabase db,
-                                 boolean use_groups ,
+    public void createTableData (SQLiteDatabase db,
+                                 boolean use_category ,
                                  int quantity_optional_columns) {
         String sql_command =
-                        "CREATE TABLE "
-                        + TABLE_DATA_NAME
-                        + " ("
-                        + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                        + "ID_FOR_SEARCH INTEGER, "
-                        + "NAME_MTR TEXT, "
-                        + "QUANTITY INTEGER, "
-                        + "SCANNED_QUANTITY INTEGER";
-        if (use_groups) {
-            sql_command += ", GROUPS TEXT";
+                        "CREATE TABLE " + TABLE_DATA_NAME
+                        + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        + ID_FOR_SEARCH +       " INTEGER, "
+                        + NAME_MTR +            " TEXT, "
+                        + QUANTITY +            " INTEGER, "
+                        + SCANNED_QUANTITY +    " INTEGER";
+        if (use_category) {
+            sql_command += ", " + CATEGORY + " TEXT";
         }
         for (int i = 0; i < quantity_optional_columns; i++) {
-            sql_command += "DESCRIPTION_" + Integer.toString(i);
+            sql_command += ", " + DESCRIPTION + Integer.toString(i) + " TEXT";
         }
         sql_command += ");";
         db.execSQL(sql_command);
-        int x = 1;
     }
+
+    public void putValuesInTableData(SQLiteDatabase db, Scanner scanner,
+                                     int num_column_id,
+                                     int num_column_name,
+                                     int num_column_quantity,
+                                     Integer num_column_category,
+                                     Integer[] numbs_optionals_columns) {
+
+        String[] row;
+        while (scanner.hasNext()) {
+            row = scanner.nextLine().split(";", -1);
+            ContentValues contentValue = new ContentValues();
+            contentValue.put(ID_FOR_SEARCH, Integer.parseInt(row[num_column_id]));
+            contentValue.put(NAME_MTR, row[num_column_name]);
+            contentValue.put(QUANTITY, Integer.parseInt(row[num_column_quantity]));
+            if (num_column_category != null) {
+                String x = row[num_column_category];
+                contentValue.put(CATEGORY, row[num_column_category]);
+            }
+            int count = 0;
+            if (numbs_optionals_columns != null) {
+                for (Integer num_column : numbs_optionals_columns) {
+                    contentValue.put(DESCRIPTION + Integer.toString(count++), row[num_column]);
+                }
+            }
+            db.insert(TABLE_DATA_NAME, null, contentValue);
+        }
+        scanner.close();
+    }
+
+    public ArrayList<String> getListCategoties(SQLiteDatabase db) {
+        ArrayList<String> list = new ArrayList<String>();
+
+        Cursor cursor = db.query(
+                TABLE_DATA_NAME,
+                new String[] {CATEGORY},
+                null,
+                null,
+                CATEGORY,
+                null,
+                null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            list.add(cursor.getString(0));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        return list;
+    }
+
+    public void deleteTableData(SQLiteDatabase db, Context context) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DATA_NAME + ";");
+    }
+
 
     public void createTableSettings () {
 
     }
 
-    public void clearTableData(SQLiteDatabase db, Context context) {
-        if (android.os.Build.VERSION.SDK_INT >= 17)
-            DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
-        else
-            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
-        db = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-        db.execSQL("Delete from " + TABLE_DATA_NAME);
-        db.close();
+    public void putValuesInTableSettings () {
+
+    }
+
+    public void deleteTableSettings () {
+
     }
 
 
-    public ArrayList<MTR> getMtrList (SQLiteDatabase db) { // FIXME переместить эту функцию куда нибудь
+    public ArrayList<MTR> getMtrList (SQLiteDatabase db) {
         ArrayList<MTR> list = new ArrayList<>();
-        Cursor cursor = db.query(TABLE_DATA_NAME, new String[] {"ID_FOR_SEARCH", "NAME_MTR", "QUANTITY"},
-                null, null, null, null, null); // FIXME обращение к несуществующей таблице
+        Cursor cursor = db.query(TABLE_DATA_NAME, new String[] {ID_FOR_SEARCH, NAME_MTR, QUANTITY},
+                null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             list.add(new MTR(   cursor.getInt(0),
@@ -104,10 +147,10 @@ class SQLiteHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public ArrayList<MTR> getMtrList (SQLiteDatabase db, String selectionArg) { // FIXME переместить эту функцию куда нибудь
+    public ArrayList<MTR> getMtrList (SQLiteDatabase db, String selectionArg) {
         ArrayList<MTR> list = new ArrayList<>();
-        Cursor cursor = db.query(TABLE_DATA_NAME, new String[] {"ID_FOR_SEARCH", "NAME_MTR", "QUANTITY"},
-                "PLACE=?", new String[] {selectionArg}, null, null, null); // FIXME обращение к несуществующей таблице
+        Cursor cursor = db.query(TABLE_DATA_NAME, new String[] {ID_FOR_SEARCH, NAME_MTR, QUANTITY},
+                CATEGORY + "=?", new String[] {selectionArg}, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             list.add(new MTR(   cursor.getInt(0),
@@ -119,6 +162,5 @@ class SQLiteHelper extends SQLiteOpenHelper {
         db.close();
         return list;
     }
-
 
 }

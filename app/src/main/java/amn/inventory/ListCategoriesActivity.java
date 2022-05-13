@@ -17,34 +17,14 @@ public class ListCategoriesActivity extends AppCompatActivity  implements Adapte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_categories);
-        ArrayList<String> list = getListPlaces();
+        SQLiteHelper helper = new SQLiteHelper(this);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        ArrayList<String> list = helper.getListPlaces(db);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerViewListOfCategories);
         recyclerView.setLayoutManager((new LinearLayoutManager(this)));
         AdapterListCategoriesActivity adapter = new AdapterListCategoriesActivity(list);
         adapter.setOnCardClickListener(this);
         recyclerView.setAdapter(adapter);
-    }
-
-    private ArrayList<String> getListPlaces() {
-        ArrayList<String> list = new ArrayList<String>();
-        SQLiteHelper helper = new SQLiteHelper(this);
-        SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.query(
-                getString(R.string.table_name),
-                new String[] {getString(R.string.column_name_PLACE)},
-                null,
-                null,
-                getString(R.string.column_name_PLACE),
-                null,
-                null);
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            list.add(cursor.getString(0));
-            cursor.moveToNext();
-        }
-        cursor.close();
-        db.close();
-        return list;
     }
 
     @Override

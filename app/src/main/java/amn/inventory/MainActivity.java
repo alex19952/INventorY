@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private int NUM_COLUMN_QUANTITY = 5;
     private int NUM_COLUMN_PLACE = 7;
     private boolean divided_into_categories = true;
+    private int skipped_lines = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,23 +63,21 @@ public class MainActivity extends AppCompatActivity {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(
                         new FileInputStream(address), getString(R.string.charset_name)));
-        Scanner scanner = new Scanner(reader);
-        scanner.nextLine();
+
         SQLiteHelper helper = new SQLiteHelper(this);
         SQLiteDatabase db = helper.getReadableDatabase();
-        helper.clearTableData(db, this);
-        String[] row;
-        while (scanner.hasNext()) {
-            row = scanner.nextLine().split(";", -1);
-            ContentValues contentValue = new ContentValues();
-            contentValue.put("ID_FOR_SEARCH", Integer.parseInt(row[NUM_COLUMN_ID]));
-            contentValue.put("NAME_MTR", row[NUM_COLUMN_NAME]);
-            contentValue.put("QUANTITY", Integer.parseInt(row[NUM_COLUMN_QUANTITY]));
-            contentValue.put("PLACE", row[NUM_COLUMN_PLACE]);
-            db.insert("MTRs", null, contentValue);
-            System.out.println(row[NUM_COLUMN_PLACE]);
+        helper.deleteTableData(db, this);
+        helper.createTableData(db, true, 0);
+//        helper.clearTableData(db, this);
+
+        Scanner scanner = new Scanner(reader);
+        for (int i = 0; i < skipped_lines; i++) {
+            scanner.nextLine();
         }
-        scanner.close();
+
+        helper.putValuesInTableData(db, scanner, NUM_COLUMN_ID, NUM_COLUMN_NAME,
+                NUM_COLUMN_QUANTITY, NUM_COLUMN_PLACE, null);
+
         db.close();
         helper.close();
     }
