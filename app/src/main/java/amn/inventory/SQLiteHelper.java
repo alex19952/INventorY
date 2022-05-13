@@ -130,27 +130,19 @@ class SQLiteHelper extends SQLiteOpenHelper {
 
     }
 
-
-    public ArrayList<MTR> getMtrList (SQLiteDatabase db) {
-        ArrayList<MTR> list = new ArrayList<>();
-        Cursor cursor = db.query(TABLE_DATA_NAME, new String[] {ID_FOR_SEARCH, NAME_MTR, QUANTITY},
-                null, null, null, null, null);
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            list.add(new MTR(   cursor.getInt(0),
-                                cursor.getString(1),
-                                cursor.getInt(2)));
-            cursor.moveToNext();
-        }
-        cursor.close();
-        db.close();
-        return list;
-    }
+///// ПОТОМ УБРАТЬ МТР
 
     public ArrayList<MTR> getMtrList (SQLiteDatabase db, String selectionArg) {
         ArrayList<MTR> list = new ArrayList<>();
-        Cursor cursor = db.query(TABLE_DATA_NAME, new String[] {ID_FOR_SEARCH, NAME_MTR, QUANTITY},
-                CATEGORY + "=?", new String[] {selectionArg}, null, null, null);
+        Cursor cursor;
+        if (selectionArg == null) {
+            cursor = db.query(TABLE_DATA_NAME, new String[] {ID_FOR_SEARCH, NAME_MTR, QUANTITY},
+                    null, null, null, null, null);
+        }
+        else {
+            cursor = db.query(TABLE_DATA_NAME, new String[] {ID_FOR_SEARCH, NAME_MTR, QUANTITY},
+                    CATEGORY + "=?", new String[] {selectionArg}, null, null, null);
+        }
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             list.add(new MTR(   cursor.getInt(0),

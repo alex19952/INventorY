@@ -15,7 +15,10 @@
         android:theme="@style/Theme.INventorY">
         <activity
             android:name=".ListCategoriesActivity"
-            android:exported="false" />
+            android:exported="false"
+            >
+        </activity>
+
         <activity
             android:name=".ScanActivity"
             android:exported="false"

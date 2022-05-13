@@ -3,6 +3,7 @@ package amn.inventory;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +24,10 @@ public class ScanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
+
+        ActionBar toolbar = getSupportActionBar();
+        toolbar.setDisplayHomeAsUpEnabled(true);
+
         EditText MTR_codeEditText = (EditText) findViewById((R.id.MTR_codeEditText));
         MTR_codeEditText.requestFocus();
         TextView last_codeTextView = (TextView) findViewById(R.id.last_codeTextView);
@@ -78,6 +83,12 @@ public class ScanActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {}
         };
         MTR_codeEditText.addTextChangedListener(change1);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
 
