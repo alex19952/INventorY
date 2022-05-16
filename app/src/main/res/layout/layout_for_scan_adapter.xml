@@ -11,7 +11,8 @@
 
         <TextView
             android:id="@+id/textIDInRecyclerView"
-            android:layout_width="wrap_content"
+            android:layout_width="35dp"
+            android:background="@drawable/ggg"
             android:layout_height="35dp"
             android:layout_margin="5dp"
             android:layout_alignParentLeft="true"
@@ -23,12 +24,24 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_toRightOf="@id/textIDInRecyclerView"
+            android:layout_toLeftOf="@id/textCurrentQuantityInRecyclerView"
             android:layout_centerVertical="true" />
 
         <TextView
             android:id="@+id/textCurrentQuantityInRecyclerView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_toLeftOf="@id/textSlash"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            />
+
+        <TextView
+            android:id="@+id/textSlash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/"
             android:layout_margin="5dp"
             android:layout_toLeftOf="@id/textQuantityInRecyclerView"
             android:layout_alignParentTop="true"

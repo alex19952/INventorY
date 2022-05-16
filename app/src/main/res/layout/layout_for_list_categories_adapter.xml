@@ -7,9 +7,9 @@
 
     <RelativeLayout
         android:id="@+id/rowOfListCategoriesAdapter"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:padding="10dp"
 
         app:layout_constraintStart_toStartOf="parent"
