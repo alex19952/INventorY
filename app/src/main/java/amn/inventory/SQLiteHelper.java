@@ -92,13 +92,33 @@ class SQLiteHelper extends SQLiteOpenHelper {
         scanner.close();
     }
 
-    public ArrayList<String> getListCategoties(SQLiteDatabase db) {
+    public ArrayList<String> getListCategories(SQLiteDatabase db) {
         ArrayList<String> list = new ArrayList<String>();
 
         Cursor cursor = db.query(
                 TABLE_DATA_NAME,
                 new String[] {CATEGORY},
                 null,
+                null,
+                CATEGORY,
+                null,
+                null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            list.add(cursor.getString(0));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        return list;
+    }
+
+    public ArrayList<String> getListCategories(SQLiteDatabase db, String search_query) {
+        ArrayList<String> list = new ArrayList<String>();
+        Cursor cursor = db.query(
+                TABLE_DATA_NAME,
+                new String[] {CATEGORY},
+                "CATEGORY LIKE " + "'%" + search_query + "%'",
                 null,
                 CATEGORY,
                 null,

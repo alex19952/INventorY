@@ -6,23 +6,78 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/load_file_button"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:onClick="onClickOpenFile"
-        />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/start_scan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="scan"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/load_file_button"
-        android:onClick="onClickStartScan"
-        />
+        <RelativeLayout
+            android:id="@+id/load_field"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            >
+
+            <ImageView
+                android:id="@+id/imageCSV"
+
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+
+                android:src="@drawable/ggg" />
+
+            <TextView
+                android:id="@+id/textFilePath"
+                android:layout_toRightOf="@+id/imageCSV"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+
+                android:text="Тута путь к вашему фалу"
+                android:textSize="14dp"
+                />
+
+            <Button
+                android:id="@+id/load_file_button"
+                android:layout_toRightOf="@id/textFilePath"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+
+                android:text="Button"
+
+                android:onClick="onClickOpenFile"
+                />
+
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/start_scan"
+            android:layout_below="@+id/load_field"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+
+            android:text="scan"
+
+            android:onClick="onClickStartScan"
+            />
+
+
+    </RelativeLayout>
+
+
+
 </android.support.constraint.ConstraintLayout>
