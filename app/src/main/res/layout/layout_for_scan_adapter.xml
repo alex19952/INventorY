@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -9,54 +10,132 @@
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints">
 
-        <TextView
-            android:id="@+id/textIDInRecyclerView"
-            android:layout_width="35dp"
-            android:background="@drawable/ggg"
-            android:layout_height="35dp"
-            android:layout_margin="5dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true" />
+        <RelativeLayout
+            android:id="@+id/idField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/textTittleInRecyclerView"
+            <ImageView
+                android:id="@+id/leftIdIcon"
+                android:layout_width="6dp"
+                android:layout_height="wrap_content"
+                android:scaleType="fitEnd"
+                android:layout_alignTop="@id/textIDInRecyclerView"
+                android:layout_alignBottom="@id/textIDInRecyclerView"
+                android:layout_alignParentTop="true"
+
+                android:src="@drawable/left_id_icon" />
+
+            <ImageView
+                android:id="@+id/centerIdIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/textIDInRecyclerView"
+                android:layout_alignTop="@id/textIDInRecyclerView"
+                android:layout_alignRight="@id/textIDInRecyclerView"
+                android:layout_alignBottom="@id/textIDInRecyclerView"
+                android:scaleType="fitXY"
+                android:src="@drawable/center_id_icon"/>
+
+            <TextView
+                android:id="@+id/textIDInRecyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/leftIdIcon"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="10dp"
+                />
+
+            <ImageView
+                android:id="@+id/rightIdIcon"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/textIDInRecyclerView"
+                android:layout_alignBottom="@id/textIDInRecyclerView"
+                android:layout_toRightOf="@id/textIDInRecyclerView"
+                android:scaleType="fitXY"
+                android:src="@drawable/right_id_icon" />
+
+            <ImageView
+                android:id="@+id/siberIdIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/textIDInRecyclerView"
+                android:layout_alignBottom="@id/textIDInRecyclerView"
+                android:layout_toRightOf="@id/rightIdIcon"
+                android:layout_toLeftOf="@+id/siberEndIdIcon"
+                android:scaleType="fitXY"
+                android:src="@drawable/siber_id_icon"
+                />
+
+            <ImageView
+                android:id="@+id/siberEndIdIcon"
+                android:layout_width="6dp"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/textIDInRecyclerView"
+                android:layout_alignBottom="@id/textIDInRecyclerView"
+                android:layout_alignParentRight="true"
+                android:scaleType="fitStart"
+                android:src="@drawable/siber_end_id_icon"
+                />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_toRightOf="@id/textIDInRecyclerView"
-            android:layout_toLeftOf="@id/textCurrentQuantityInRecyclerView"
-            android:layout_centerVertical="true" />
+            android:layout_below="@+id/idField"
+            android:layout_marginTop="-8dp"
+            android:layout_marginBottom="20dp">
 
-        <TextView
-            android:id="@+id/textCurrentQuantityInRecyclerView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_toLeftOf="@id/textSlash"
-            android:layout_alignParentTop="true"
-            android:layout_centerVertical="true"
-            />
+            <TextView
+                android:id="@+id/textTittleInRecyclerView"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:singleLine="true"
+                />
 
-        <TextView
-            android:id="@+id/textSlash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="/"
-            android:layout_margin="5dp"
-            android:layout_toLeftOf="@id/textQuantityInRecyclerView"
-            android:layout_alignParentTop="true"
-            android:layout_centerVertical="true"
-            />
+            <TextView
+                android:id="@+id/textCurrentQuantityInRecyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/textSlash" />
 
-        <TextView
-            android:id="@+id/textQuantityInRecyclerView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerVertical="true"
-            />
+            <TextView
+                android:id="@+id/textSlash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="5dp"
+                android:layout_toLeftOf="@id/textQuantityInRecyclerView"
+                android:text="/" />
+
+            <TextView
+                android:id="@+id/textQuantityInRecyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp" />
+
+        </RelativeLayout>
+
     </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

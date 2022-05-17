@@ -45,7 +45,7 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
 
     @Override
     public void onBindViewHolder(MTRViewHolder MTRViewHolder, int i) {
-            MTRViewHolder.id.setText(MTRs.get(i).id.toString());
+            MTRViewHolder.id.setText("id: " + MTRs.get(i).id.toString());
             MTRViewHolder.tittle.setText(MTRs.get(i).tittle);
             MTRViewHolder.quantity.setText(MTRs.get(i).quantity.toString());
             MTRViewHolder.current_quantity.setText(MTRs.get(i).current_quantity.toString());

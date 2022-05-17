@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -47,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             Uri file;
             file = data.getData();
+            TextView textView = (TextView) findViewById(R.id.textFilePath);
+            textView.setText(file.getLastPathSegment());
             try {
                 // ТУТ ДОЛЖНА БЫТЬ ПРОВЕРКА ФАЙЛА!!! FIXME
                 createDataBase(file);

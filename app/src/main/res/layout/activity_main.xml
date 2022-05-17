@@ -21,43 +21,42 @@
             android:id="@+id/load_field"
 
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            >
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true">
 
             <ImageView
                 android:id="@+id/imageCSV"
 
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
+                android:layout_width="35dp"
+                android:layout_height="25dp"
 
-                android:src="@drawable/ggg" />
+                android:layout_alignParentBottom="true"
+
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/csv_icon" />
 
             <TextView
                 android:id="@+id/textFilePath"
-                android:layout_toRightOf="@+id/imageCSV"
+                android:layout_width="200dp"
 
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_alignParentBottom="true"
 
-                android:text="Тута путь к вашему фалу"
-                android:textSize="14dp"
-                />
+
+                android:layout_toRightOf="@+id/imageCSV"
+                android:text="Выберете файл" />
 
             <Button
                 android:id="@+id/load_file_button"
+                android:layout_width="50dp"
+
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/textFilePath"
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:background="@drawable/load_icon"
 
-                android:text="Button"
-
-                android:onClick="onClickOpenFile"
-                />
+                android:onClick="onClickOpenFile" />
 
 
         </RelativeLayout>
@@ -66,11 +65,12 @@
             android:id="@+id/start_scan"
             android:layout_below="@+id/load_field"
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_centerHorizontal="true"
 
-            android:text="scan"
+            android:background="@drawable/scan_icon"
 
             android:onClick="onClickStartScan"
             />
