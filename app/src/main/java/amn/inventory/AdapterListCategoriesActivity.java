@@ -1,5 +1,6 @@
 package amn.inventory;
 
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +11,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class AdapterListCategoriesActivity extends RecyclerView.Adapter<AdapterListCategoriesActivity.ListCategoriesiewHolder> {
-    ArrayList<String> categories;
-    AdapterListCategoriesActivity(ArrayList<String> categories) {
-        this.categories = categories;
+
+    private Cursor cursor;
+
+    AdapterListCategoriesActivity(Cursor cursor) {
+        this.cursor = cursor;
     }
 
     public static class ListCategoriesiewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView tittle;
+        TextView quantity;
         View layout;
 
         ListCategoriesiewHolder(View itemView){
@@ -25,6 +29,7 @@ public class AdapterListCategoriesActivity extends RecyclerView.Adapter<AdapterL
             super(itemView);
             layout = (View)itemView.findViewById(R.id.rowOfListCategoriesAdapter);
             tittle = (TextView)itemView.findViewById(R.id.textTittleInRowOfListCategories);
+            quantity = (TextView)itemView.findViewById(R.id.textQuantityPositions);
             layout.setOnClickListener(this);
         }
 
@@ -36,7 +41,7 @@ public class AdapterListCategoriesActivity extends RecyclerView.Adapter<AdapterL
 
     @Override
     public int getItemCount() {
-        return categories.size();
+        return cursor.getCount();
     }
 
     @Override
@@ -48,7 +53,9 @@ public class AdapterListCategoriesActivity extends RecyclerView.Adapter<AdapterL
 
     @Override
     public void onBindViewHolder(AdapterListCategoriesActivity.ListCategoriesiewHolder holder, int i) {
-        holder.tittle.setText(categories.get(i));
+        cursor.moveToPosition(i);
+        holder.tittle.setText(cursor.getString(1));
+        holder.quantity.setText(Integer.toString(cursor.getInt(2)));
     }
 
     @Override
@@ -56,17 +63,18 @@ public class AdapterListCategoriesActivity extends RecyclerView.Adapter<AdapterL
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    public void swapItem(int fromPosition, int toPosition){
-        Collections.swap(this.categories, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-    }
-
     private static OnCardClickListener mListener;
     interface OnCardClickListener {
         void onCardClick(View view,  String tittle);
     }
+
     public void setOnCardClickListener(OnCardClickListener listener) {
         mListener = listener;
+    }
+
+    public void changeAdapter(Cursor cursor){
+        this.cursor = cursor;
+        this.notifyDataSetChanged();
     }
 
 }

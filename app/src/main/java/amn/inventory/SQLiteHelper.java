@@ -5,8 +5,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.CursorAdapter;
+import android.widget.SimpleCursorAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 class SQLiteHelper extends SQLiteOpenHelper {
@@ -92,46 +96,71 @@ class SQLiteHelper extends SQLiteOpenHelper {
         scanner.close();
     }
 
-    public ArrayList<String> getListCategories(SQLiteDatabase db) {
-        ArrayList<String> list = new ArrayList<String>();
-
-        Cursor cursor = db.query(
+    public Cursor getCursorOnCategories (SQLiteDatabase db, String filter) {
+        return db.query(
                 TABLE_DATA_NAME,
-                new String[] {CATEGORY},
-                null,
+                new String[] {"_id", CATEGORY, "COUNT(*) as count"},
+                "CATEGORY LIKE " + "'%" + filter + "%'",
                 null,
                 CATEGORY,
                 null,
                 null);
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            list.add(cursor.getString(0));
-            cursor.moveToNext();
-        }
-        cursor.close();
-        db.close();
-        return list;
     }
 
-    public ArrayList<String> getListCategories(SQLiteDatabase db, String search_query) {
-        ArrayList<String> list = new ArrayList<String>();
-        Cursor cursor = db.query(
-                TABLE_DATA_NAME,
-                new String[] {CATEGORY},
-                "CATEGORY LIKE " + "'%" + search_query + "%'",
-                null,
-                CATEGORY,
-                null,
-                null);
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            list.add(cursor.getString(0));
-            cursor.moveToNext();
-        }
-        cursor.close();
-        db.close();
-        return list;
-    }
+//    public ArrayList<String> getListCategories(SQLiteDatabase db) {
+//        ArrayList<String> list = new ArrayList<String>();
+//
+//        Cursor cursor = db.query(
+//                TABLE_DATA_NAME,
+//                new String[] {CATEGORY},
+//                null,
+//                null,
+//                CATEGORY,
+//                null,
+//                null);
+//        cursor.moveToFirst();
+//        while (!cursor.isAfterLast()) {
+//            list.add(cursor.getString(0));
+//            cursor.moveToNext();
+//        }
+//        cursor.close();
+//        db.close();
+//        return list;
+//    }
+//
+//    public ArrayList<String> getListCategories(SQLiteDatabase db, String search_query) {
+//        ArrayList list = new ArrayList();
+////        Cursor cursor = db.query(
+////                TABLE_DATA_NAME,
+////                new String[] {CATEGORY},
+////                "CATEGORY LIKE " + "'%" + search_query + "%'",
+////                null,
+////                CATEGORY,
+////                null,
+////                null);
+//        Cursor cursor = db.query(
+//                TABLE_DATA_NAME,
+//                new String[] {CATEGORY, "COUNT(*) as count"},
+//                "CATEGORY LIKE " + "'%" + search_query + "%'",
+//                null,
+//                CATEGORY,
+//                null,
+//                null);
+//        //"SELECT COUNT (*) FROM " + TABLE_TODOTASK + " WHERE " + KEY_TASK_TASKLISTID + "=?",
+//        //             new String[] { String.valueOf(tasklist_Id) }
+//
+//        cursor.moveToFirst();
+//        while (!cursor.isAfterLast()) {
+//            ArrayList sub_list = new ArrayList();
+//            sub_list.add(cursor.getString(0));
+//            sub_list.add(cursor.getInt(1));
+//            list.add(sub_list);
+//            cursor.moveToNext();
+//        }
+//        cursor.close();
+//        db.close();
+//        return list;
+//    }
 
     public void deleteTableData(SQLiteDatabase db, Context context) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DATA_NAME + ";");

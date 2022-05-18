@@ -25,13 +25,23 @@
             />
 
         <TextView
+            android:id="@+id/textPositions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:layout_below="@id/textTittleInRowOfListCategories"
+            android:text="Позиций: "
+            />
+
+        <TextView
             android:id="@+id/textQuantityPositions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14dp"
             android:layout_below="@id/textTittleInRowOfListCategories"
-            android:text="Позиций: 5"
+            android:layout_toRightOf="@id/textPositions"
             />
+
 
     </RelativeLayout>
 

@@ -1,6 +1,7 @@
 package amn.inventory;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CursorAdapter;
+import android.widget.SimpleCursorAdapter;
 
 import java.util.ArrayList;
 
@@ -18,23 +21,19 @@ public class ListCategoriesActivity extends AppCompatActivity implements Adapter
 
     RecyclerView recyclerView;
     AdapterListCategoriesActivity adapter;
-    ArrayList<String> list;
     SQLiteHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_categories);
-
         ActionBar toolbar = getSupportActionBar();
         toolbar.setDisplayHomeAsUpEnabled(true);
-
         helper = new SQLiteHelper(this);
         SQLiteDatabase db = helper.getReadableDatabase();
-        list = helper.getListCategories(db);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewListOfCategories);
         recyclerView.setLayoutManager((new LinearLayoutManager(this)));
-        adapter = new AdapterListCategoriesActivity(list);
+        adapter = new AdapterListCategoriesActivity(helper.getCursorOnCategories(db, ""));
         adapter.setOnCardClickListener(this);
         recyclerView.setAdapter(adapter);
     }
@@ -52,10 +51,8 @@ public class ListCategoriesActivity extends AppCompatActivity implements Adapter
 
             @Override
             public boolean onQueryTextChange(String s) {
-                System.out.println(s);
                 SQLiteDatabase db = helper.getReadableDatabase();
-                adapter.categories = helper.getListCategories(db, s);
-                adapter.notifyDataSetChanged();
+                adapter.changeAdapter(helper.getCursorOnCategories(db, s));
                 return false;
             }
         });
