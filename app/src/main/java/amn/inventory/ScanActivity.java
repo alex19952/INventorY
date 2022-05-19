@@ -2,6 +2,7 @@ package amn.inventory;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,8 +14,6 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 public class ScanActivity extends AppCompatActivity {
 
@@ -31,13 +30,14 @@ public class ScanActivity extends AppCompatActivity {
         EditText MTR_codeEditText = (EditText) findViewById((R.id.MTR_codeEditText));
         MTR_codeEditText.requestFocus();
         TextView last_codeTextView = (TextView) findViewById(R.id.last_codeTextView);
-        SQLiteHelper sql_helper = new SQLiteHelper(this);
-        db = sql_helper.getReadableDatabase();
-        ArrayList<MTR> scanned_MTRs = sql_helper.getMtrList(db,
-                getIntent().getStringExtra(getString(R.string.arg_for_scan_activity)));
+        SQLiteHelper helper = new SQLiteHelper(this);
+        db = helper.getReadableDatabase();
+        String arg = getIntent().getStringExtra(getString(R.string.arg_for_scan_activity));
+        Cursor cursor = helper.getCursorOnScaning(
+                db, arg);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.MTR_RecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        AdapterScanActivity adapter = new AdapterScanActivity(scanned_MTRs);
+        AdapterScanActivity adapter = new AdapterScanActivity(cursor);
         recyclerView.setAdapter(adapter);
 
         TextWatcher change1 = new TextWatcher() {
@@ -49,24 +49,33 @@ public class ScanActivity extends AppCompatActivity {
                 if(strSequence.length() != 0 && strSequence.charAt(strSequence.length() - 1) == '\n'){
                     try {
                         int intSequence = Integer.parseInt(strSequence.replace("\n", ""));
-                        MTR scanned_MTR = scanned_MTRs.stream().filter(mtr -> intSequence == mtr.id).findAny().orElse(null);
-                        if (scanned_MTR == null) {
+                        if (helper.entryData(db, intSequence, arg) == 0) {
+                            if (helper.entryData(db, intSequence) == 0) {
+                                Toast toast = Toast.makeText(
+                                        getApplicationContext(),
+                                        getString(R.string.no_id),
+                                        LENGTH_SHORT);
+                                toast.show();
+                            } else {
+                                Toast toast = Toast.makeText(
+                                        getApplicationContext(),
+                                        getString(R.string.other_category),
+                                        LENGTH_SHORT);
+                                toast.show();
+                            }
+                        }
+                        else if (helper.entryData(db, intSequence, arg) > 1) {
                             Toast toast = Toast.makeText(
                                     getApplicationContext(),
-                                    getString(R.string.no_id),
+                                    getString(R.string.many_id),
                                     LENGTH_SHORT);
                             toast.show();
                         }
                         else {
-                            scanned_MTR.IncrementCurrentQuantity();
-                            if (scanned_MTR.current_quantity >= scanned_MTR.quantity) {
-                                scanned_MTRs.remove(scanned_MTR);
-                            } else {
-                                adapter.swapItem(scanned_MTRs.indexOf(scanned_MTR), 0);
-                            }
-                            adapter.notifyDataSetChanged();
+                            helper.incrementScanQuantity(db, intSequence);
+                            Cursor cursor = helper.getCursorOnScaning(db, arg);
+                            adapter.changeAdapter(cursor);
                             last_codeTextView.setText(strSequence);
-                            MTR_codeEditText.setText("");
                         }
                     }
                     catch  (Exception e) {
@@ -91,5 +100,3 @@ public class ScanActivity extends AppCompatActivity {
         return true;
     }
 }
-
-

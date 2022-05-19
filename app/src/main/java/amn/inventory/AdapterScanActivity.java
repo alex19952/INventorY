@@ -1,4 +1,5 @@
 package amn.inventory;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -6,14 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.Collections;
-import java.util.List;
 
 public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivity.MTRViewHolder> {
-    List<MTR> MTRs;
+    Cursor cursor;
 
-    AdapterScanActivity(List<MTR> MTRs) {
-        this.MTRs = MTRs;
+    AdapterScanActivity(Cursor cursor) {
+        this.cursor = cursor;
     }
 
     public static class MTRViewHolder extends  RecyclerView.ViewHolder{
@@ -24,7 +23,7 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
 
         MTRViewHolder(View itemView){
             super(itemView);
-            id = (TextView)itemView.findViewById(R.id.textIDInRecyclerView);
+            id = (TextView)itemView.findViewById(R.id.numIDInRecyclerView);
             tittle = (TextView)itemView.findViewById(R.id.textTittleInRecyclerView);
             quantity = (TextView)itemView.findViewById(R.id.textQuantityInRecyclerView);
             current_quantity = (TextView)itemView.findViewById(R.id.textCurrentQuantityInRecyclerView);
@@ -33,7 +32,7 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
 
     @Override
     public int getItemCount() {
-        return MTRs.size();
+        return cursor.getCount();
     }
 
     @Override
@@ -45,10 +44,11 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
 
     @Override
     public void onBindViewHolder(MTRViewHolder MTRViewHolder, int i) {
-            MTRViewHolder.id.setText("id: " + MTRs.get(i).id.toString());
-            MTRViewHolder.tittle.setText(MTRs.get(i).tittle);
-            MTRViewHolder.quantity.setText(MTRs.get(i).quantity.toString());
-            MTRViewHolder.current_quantity.setText(MTRs.get(i).current_quantity.toString());
+            cursor.moveToPosition(i);
+            MTRViewHolder.id.setText("id: " + String.valueOf(cursor.getInt(1)));
+            MTRViewHolder.tittle.setText(cursor.getString(2));
+            MTRViewHolder.quantity.setText(String.valueOf(cursor.getInt(3)));
+            MTRViewHolder.current_quantity.setText(String.valueOf(cursor.getInt(4)));
     }
 
     @Override
@@ -56,8 +56,8 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    public void swapItem(int fromPosition, int toPosition){
-        Collections.swap(this.MTRs, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
+    public void changeAdapter(Cursor cursor){
+        this.cursor = cursor;
+        this.notifyDataSetChanged();
     }
 }

@@ -5,12 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.CursorAdapter;
-import android.widget.SimpleCursorAdapter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 class SQLiteHelper extends SQLiteOpenHelper {
@@ -26,22 +20,16 @@ class SQLiteHelper extends SQLiteOpenHelper {
     private static final String SCANNED_QUANTITY = "SCANNED_QUANTITY";
     private static final String CATEGORY = "CATEGORY";
     private static final String DESCRIPTION = "DESCRIPTION";
-    private Context context;
-
 
     private String ADDITIONAL_COLUMNS = ", PLACE TEXT";
 
-
     SQLiteHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
-        this.context = context;
     }
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {
     }
-
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -107,65 +95,43 @@ class SQLiteHelper extends SQLiteOpenHelper {
                 null);
     }
 
-//    public ArrayList<String> getListCategories(SQLiteDatabase db) {
-//        ArrayList<String> list = new ArrayList<String>();
-//
-//        Cursor cursor = db.query(
-//                TABLE_DATA_NAME,
-//                new String[] {CATEGORY},
-//                null,
-//                null,
-//                CATEGORY,
-//                null,
-//                null);
-//        cursor.moveToFirst();
-//        while (!cursor.isAfterLast()) {
-//            list.add(cursor.getString(0));
-//            cursor.moveToNext();
-//        }
-//        cursor.close();
-//        db.close();
-//        return list;
-//    }
-//
-//    public ArrayList<String> getListCategories(SQLiteDatabase db, String search_query) {
-//        ArrayList list = new ArrayList();
-////        Cursor cursor = db.query(
-////                TABLE_DATA_NAME,
-////                new String[] {CATEGORY},
-////                "CATEGORY LIKE " + "'%" + search_query + "%'",
-////                null,
-////                CATEGORY,
-////                null,
-////                null);
-//        Cursor cursor = db.query(
-//                TABLE_DATA_NAME,
-//                new String[] {CATEGORY, "COUNT(*) as count"},
-//                "CATEGORY LIKE " + "'%" + search_query + "%'",
-//                null,
-//                CATEGORY,
-//                null,
-//                null);
-//        //"SELECT COUNT (*) FROM " + TABLE_TODOTASK + " WHERE " + KEY_TASK_TASKLISTID + "=?",
-//        //             new String[] { String.valueOf(tasklist_Id) }
-//
-//        cursor.moveToFirst();
-//        while (!cursor.isAfterLast()) {
-//            ArrayList sub_list = new ArrayList();
-//            sub_list.add(cursor.getString(0));
-//            sub_list.add(cursor.getInt(1));
-//            list.add(sub_list);
-//            cursor.moveToNext();
-//        }
-//        cursor.close();
-//        db.close();
-//        return list;
-//    }
+    public Cursor getCursorOnScaning(SQLiteDatabase db, String selectionArg) {
+        if (selectionArg == null) {
+            return db.query(TABLE_DATA_NAME, new String[] {"_id", ID_FOR_SEARCH, NAME_MTR, QUANTITY, SCANNED_QUANTITY},
+                    null, null, null, null, null);
+        }
+        else {
+            Cursor cursor = db.query(TABLE_DATA_NAME, new String[] {"_id", ID_FOR_SEARCH, NAME_MTR, QUANTITY, SCANNED_QUANTITY},
+                    CATEGORY + "=?", new String[] {selectionArg}, null, null, null);
+            return cursor;
+        }
+    }
+
+    public int entryData(SQLiteDatabase db, int id, String category) {
+        // returns the number of occurrences of rows with the passed id
+        Cursor cursor = db.query(TABLE_DATA_NAME, new String[] {ID_FOR_SEARCH},
+                ID_FOR_SEARCH + "=?" +
+                        " AND " + CATEGORY + "=?", new String[] {String.valueOf(id), category},
+                null, null, null);
+        return cursor.getCount();
+    }
+
+    public int entryData(SQLiteDatabase db, int id) {
+        // returns the number of occurrences of rows with the passed id
+        Cursor cursor = db.query(TABLE_DATA_NAME, new String[] {ID_FOR_SEARCH},
+                ID_FOR_SEARCH + "=?", new String[] {String.valueOf(id)},
+                null, null, null);
+        return cursor.getCount();
+    }
+
+    public void incrementScanQuantity(SQLiteDatabase db, int id) {
+        String sql_command = "UPDATE " + TABLE_DATA_NAME + " set " + SCANNED_QUANTITY + "=" + SCANNED_QUANTITY + "+1 where " + ID_FOR_SEARCH + "=" + String.valueOf(id);
+        db.execSQL(sql_command);
+    }
 
     public void deleteTableData(SQLiteDatabase db, Context context) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DATA_NAME + ";");
     }
-
 
     public void createTableSettings () {
 
@@ -177,31 +143,6 @@ class SQLiteHelper extends SQLiteOpenHelper {
 
     public void deleteTableSettings () {
 
-    }
-
-///// ПОТОМ УБРАТЬ МТР
-
-    public ArrayList<MTR> getMtrList (SQLiteDatabase db, String selectionArg) {
-        ArrayList<MTR> list = new ArrayList<>();
-        Cursor cursor;
-        if (selectionArg == null) {
-            cursor = db.query(TABLE_DATA_NAME, new String[] {ID_FOR_SEARCH, NAME_MTR, QUANTITY},
-                    null, null, null, null, null);
-        }
-        else {
-            cursor = db.query(TABLE_DATA_NAME, new String[] {ID_FOR_SEARCH, NAME_MTR, QUANTITY},
-                    CATEGORY + "=?", new String[] {selectionArg}, null, null, null);
-        }
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            list.add(new MTR(   cursor.getInt(0),
-                    cursor.getString(1),
-                    cursor.getInt(2)));
-            cursor.moveToNext();
-        }
-        cursor.close();
-        db.close();
-        return list;
     }
 
 }

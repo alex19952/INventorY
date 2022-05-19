@@ -3,7 +3,9 @@
     <string name="action_settings">Settings</string>
 
     <string name="scan_error">Похоже, вы просканировали кота!</string>
-    <string name="no_id">Такого id теперь нет/не было в списке!!!</string>
+    <string name="no_id">Такого id нет в списке!!!</string>
+    <string name="many_id">Оу! Кажется у вас в базе не уникальные id. Я не знаю что выбрать.</string>
+    <string name="other_category">Ищите это в другой категории (предложить действие: перенести и прибавить или прибавить оставив в той категории или ничего)</string>
     <string name="charset_name">Cp1251</string>
     <string name="arg_for_scan_activity">selectionArg</string>
 

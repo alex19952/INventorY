@@ -1,6 +1,5 @@
 package amn.inventory;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -71,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase db = helper.getReadableDatabase();
         helper.deleteTableData(db, this);
         helper.createTableData(db, true, 0);
-//        helper.clearTableData(db, this);
 
         Scanner scanner = new Scanner(reader);
         for (int i = 0; i < skipped_lines; i++) {

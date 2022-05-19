@@ -1,7 +1,6 @@
 package amn.inventory;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,10 +11,6 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CursorAdapter;
-import android.widget.SimpleCursorAdapter;
-
-import java.util.ArrayList;
 
 public class ListCategoriesActivity extends AppCompatActivity implements AdapterListCategoriesActivity.OnCardClickListener {
 

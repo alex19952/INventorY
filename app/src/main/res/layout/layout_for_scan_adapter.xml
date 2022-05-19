@@ -20,8 +20,8 @@
                 android:layout_width="6dp"
                 android:layout_height="wrap_content"
                 android:scaleType="fitEnd"
-                android:layout_alignTop="@id/textIDInRecyclerView"
-                android:layout_alignBottom="@id/textIDInRecyclerView"
+                android:layout_alignTop="@id/linerLayoutIdText"
+                android:layout_alignBottom="@id/linerLayoutIdText"
                 android:layout_alignParentTop="true"
 
                 android:src="@drawable/left_id_icon" />
@@ -30,31 +30,51 @@
                 android:id="@+id/centerIdIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/textIDInRecyclerView"
-                android:layout_alignTop="@id/textIDInRecyclerView"
-                android:layout_alignRight="@id/textIDInRecyclerView"
-                android:layout_alignBottom="@id/textIDInRecyclerView"
+                android:layout_alignLeft="@id/linerLayoutIdText"
+                android:layout_alignTop="@id/linerLayoutIdText"
+                android:layout_alignRight="@id/linerLayoutIdText"
+                android:layout_alignBottom="@id/linerLayoutIdText"
                 android:scaleType="fitXY"
                 android:src="@drawable/center_id_icon"/>
 
-            <TextView
-                android:id="@+id/textIDInRecyclerView"
+            <LinearLayout
+                android:id="@+id/linerLayoutIdText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:layout_toRightOf="@id/leftIdIcon"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="10dp"
-                />
+                >
+                <TextView
+                    android:id="@+id/textIDInRecyclerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="10dp"
+                    android:text="id: "
+                    />
+                <TextView
+                    android:id="@+id/numIDInRecyclerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="10dp"
+                    />
+
+
+            </LinearLayout>
+
+
 
             <ImageView
                 android:id="@+id/rightIdIcon"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/textIDInRecyclerView"
-                android:layout_alignBottom="@id/textIDInRecyclerView"
-                android:layout_toRightOf="@id/textIDInRecyclerView"
+                android:layout_alignTop="@id/linerLayoutIdText"
+                android:layout_alignBottom="@id/linerLayoutIdText"
+                android:layout_toRightOf="@id/linerLayoutIdText"
                 android:scaleType="fitXY"
                 android:src="@drawable/right_id_icon" />
 
@@ -62,8 +82,8 @@
                 android:id="@+id/siberIdIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/textIDInRecyclerView"
-                android:layout_alignBottom="@id/textIDInRecyclerView"
+                android:layout_alignTop="@id/linerLayoutIdText"
+                android:layout_alignBottom="@id/linerLayoutIdText"
                 android:layout_toRightOf="@id/rightIdIcon"
                 android:layout_toLeftOf="@+id/siberEndIdIcon"
                 android:scaleType="fitXY"
@@ -74,8 +94,8 @@
                 android:id="@+id/siberEndIdIcon"
                 android:layout_width="6dp"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/textIDInRecyclerView"
-                android:layout_alignBottom="@id/textIDInRecyclerView"
+                android:layout_alignTop="@id/linerLayoutIdText"
+                android:layout_alignBottom="@id/linerLayoutIdText"
                 android:layout_alignParentRight="true"
                 android:scaleType="fitStart"
                 android:src="@drawable/siber_end_id_icon"
