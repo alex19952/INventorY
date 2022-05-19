@@ -48,7 +48,8 @@ public class ScanActivity extends AppCompatActivity {
                 String strSequence = charSequence.toString();
                 if(strSequence.length() != 0 && strSequence.charAt(strSequence.length() - 1) == '\n'){
                     try {
-                        int intSequence = Integer.parseInt(strSequence.replace("\n", ""));
+                        strSequence = strSequence.substring(0, strSequence.length() - 1);
+                        int intSequence = Integer.parseInt(strSequence);
                         if (helper.entryData(db, intSequence, arg) == 0) {
                             if (helper.entryData(db, intSequence) == 0) {
                                 Toast toast = Toast.makeText(
