@@ -52,6 +52,7 @@ public class AdapterListCategoriesActivity extends RecyclerView.Adapter<AdapterL
     public void onBindViewHolder(AdapterListCategoriesActivity.ListCategoriesiewHolder holder, int i) {
         cursor.moveToPosition(i);
         holder.tittle.setText(cursor.getString(1));
+        System.out.println(cursor.getString(1));
         holder.quantity.setText(Integer.toString(cursor.getInt(2)));
     }
 

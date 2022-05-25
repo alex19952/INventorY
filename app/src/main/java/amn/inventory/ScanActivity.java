@@ -54,13 +54,13 @@ public class ScanActivity extends AppCompatActivity {
                             if (helper.entryData(db, intSequence) == 0) {
                                 Toast toast = Toast.makeText(
                                         getApplicationContext(),
-                                        getString(R.string.no_id),
+                                        getString(R.string.warning_no_id),
                                         LENGTH_SHORT);
                                 toast.show();
                             } else {
                                 Toast toast = Toast.makeText(
                                         getApplicationContext(),
-                                        getString(R.string.other_category),
+                                        getString(R.string.warning_other_category),
                                         LENGTH_SHORT);
                                 toast.show();
                             }
@@ -68,7 +68,7 @@ public class ScanActivity extends AppCompatActivity {
                         else if (helper.entryData(db, intSequence, arg) > 1) {
                             Toast toast = Toast.makeText(
                                     getApplicationContext(),
-                                    getString(R.string.many_id),
+                                    getString(R.string.warning_many_id),
                                     LENGTH_SHORT);
                             toast.show();
                         }
@@ -81,7 +81,7 @@ public class ScanActivity extends AppCompatActivity {
                     }
                     catch  (Exception e) {
                         Toast toast = Toast.makeText(getApplicationContext(),
-                                getString(R.string.scan_error), LENGTH_SHORT);
+                                getString(R.string.warning_scan_error), LENGTH_SHORT);
                         toast.show();
                     }
                     finally {
