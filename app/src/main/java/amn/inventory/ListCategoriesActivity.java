@@ -23,6 +23,7 @@ public class ListCategoriesActivity extends AppCompatActivity implements Adapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_categories);
         ActionBar toolbar = getSupportActionBar();
+        assert toolbar != null;
         toolbar.setDisplayHomeAsUpEnabled(true);
         helper = new SQLiteHelper(this);
         SQLiteDatabase db = helper.getReadableDatabase();

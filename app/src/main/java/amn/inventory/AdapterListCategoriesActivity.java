@@ -1,6 +1,8 @@
 package amn.inventory;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,13 +43,14 @@ public class AdapterListCategoriesActivity extends RecyclerView.Adapter<AdapterL
         return cursor.getCount();
     }
 
+    @NonNull
     @Override
     public AdapterListCategoriesActivity.ListCategoriesiewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_for_list_categories_adapter, viewGroup, false);
-        AdapterListCategoriesActivity.ListCategoriesiewHolder lc_view_holder = new AdapterListCategoriesActivity.ListCategoriesiewHolder(v);
-        return lc_view_holder;
+        return new ListCategoriesiewHolder(v);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(AdapterListCategoriesActivity.ListCategoriesiewHolder holder, int i) {
         cursor.moveToPosition(i);
@@ -57,7 +60,7 @@ public class AdapterListCategoriesActivity extends RecyclerView.Adapter<AdapterL
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
 
@@ -70,6 +73,7 @@ public class AdapterListCategoriesActivity extends RecyclerView.Adapter<AdapterL
         mListener = listener;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void changeAdapter(Cursor cursor){
         this.cursor = cursor;
         this.notifyDataSetChanged();

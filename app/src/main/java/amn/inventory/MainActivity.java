@@ -1,6 +1,8 @@
 package amn.inventory;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -14,8 +16,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
+import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -34,7 +39,6 @@ import jxl.write.WriteException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final int PICKFILE_RESULT_CODE = 0;
     private int NUM_COLUMN_ID = 0;
     private int NUM_COLUMN_NAME = 4;
     private int NUM_COLUMN_QUANTITY = 5;
@@ -42,10 +46,20 @@ public class MainActivity extends AppCompatActivity {
     private boolean divided_into_categories = true;
     private int tittles = 0;
 
+    Button scan_button;
+    Button load_button;
+
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
+        scan_button = findViewById(R.id.start_scan);
+        load_button = findViewById(R.id.load_button);
+        startAnimation();
+
     }
 
     public void onClickOpenFile(View view) {
@@ -67,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     chooseFile.setType("text/comma-separated-values");
                     chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
                     chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                    int PICKFILE_RESULT_CODE = 0;
                     startActivityForResult(chooseFile, PICKFILE_RESULT_CODE);
 
                 } else {
@@ -74,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, R.string.warning_read_external_storage,
                             Toast.LENGTH_SHORT).show();
                 }
-                return;
+//                return;
             }
         }
     }
@@ -84,31 +99,32 @@ public class MainActivity extends AppCompatActivity {
         Log.d("myLogs", "requestCode = " + requestCode + ", resultCode = " + resultCode);
         if (resultCode == RESULT_OK) {
 
-            Uri file;
-            file = data.getData();
-
-            TextView textView = (TextView) findViewById(R.id.textFilePath);
-            textView.setText(file.getLastPathSegment());
-
-
-
             try {
                 // ТУТ ДОЛЖНА БЫТЬ ПРОВЕРКА ФАЙЛА!!! FIXME
-
+                Uri file;
+                file = data.getData();
 
                 String address = file.getLastPathSegment();
                 address = (Environment.getExternalStorageDirectory() + "/"
                         + address.substring(address.lastIndexOf(':') + 1));
 
+                String[] path = address.split("\\.");
+                String text_load_btn = "";
+                for (int i = 0; i < path.length - 1; i++) {
+                    text_load_btn += path[i];
+                }
+                Button load_button = (Button) findViewById(R.id.load_button);
+                load_button.setText(text_load_btn);
+                String format = path[path.length - 1];
+                if (format.equals("csv")) {
+                    load_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.csv_icon, 0, R.drawable.reload_icon, 0);
+                }
+
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(
                                 new FileInputStream(address), getString(R.string.charset_name)));
-
                 Scanner scanner = new Scanner(reader);
-
-//                ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
-//                progressBar.setVisibility(ProgressBar.VISIBLE);
-                new ВatabaseСreator().execute(scanner);
+                new DatabaseCreator().execute(scanner);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -116,11 +132,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class ВatabaseСreator extends AsyncTask <Scanner, ProgressBar, Integer> implements amn.inventory.cteateDataBase {
+    private class DatabaseCreator extends AsyncTask <Scanner, ProgressBar, Integer> {
 
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
         @Override
-        protected void onPreExecute () {
+        protected void onPreExecute() {
             progressBar.setVisibility(ProgressBar.VISIBLE);
         }
 
@@ -152,37 +169,56 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onProgressUpdate (ProgressBar... values) {
+        protected void onProgressUpdate(ProgressBar... values) {
 
         }
 
         @Override
-        protected void onPostExecute (Integer result) {
+        protected void onPostExecute(Integer result) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
+            Animation anim_scan_1 = AnimationUtils.loadAnimation(context, R.anim.anim_scan_btn_1);
+
+            anim_scan_1.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    scan_button.setVisibility(Button.VISIBLE);
+                    scan_button.setEnabled(true);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
+            scan_button.startAnimation(anim_scan_1);
         }
     }
+
 
     public void onClickStartScan(View view) {
         if (divided_into_categories) {
             Intent intent = new Intent(MainActivity.this, ListCategoriesActivity.class);
             startActivity(intent);
-        }
-        else {
+        } else {
             Intent intent = new Intent(MainActivity.this, ScanActivity.class);
             startActivity(intent);
         }
     }
 
-    public void onClickSave (View view) {
+    public void onClickSave(View view) {
+
         String save_file = "/storage/emulated/0/Download/База МТР/excel.xls"; // FIXME
         WritableWorkbook workbook = null;
         SQLiteHelper helper = new SQLiteHelper(this);
         SQLiteDatabase db = helper.getReadableDatabase();
 
-
         try {
             workbook = Workbook.createWorkbook(new File(save_file));
-            MediaScannerConnection.scanFile(this, new String[] { save_file }, null, null);
+            MediaScannerConnection.scanFile(this, new String[]{save_file}, null, null);
             WritableSheet sheet = workbook.createSheet("Инвентаризация", 0);
 
 
@@ -200,25 +236,21 @@ public class MainActivity extends AppCompatActivity {
             cursor = helper.getDataFromDataTable(db);
             cursor.moveToFirst();
 
-            for (int row = 1; row < cursor.getCount() + 1; row++) { // FIXME если будешь менять не заьудь про +1
+            for (int row = 1; row < cursor.getCount() + 1; row++) {
                 for (int column = 0; column < cursor.getColumnCount(); column++) {
-                    Label label = new Label (column, row, cursor.getString(column));
+                    Label label = new Label(column, row, cursor.getString(column));
                     sheet.addCell(label);
                 }
                 cursor.moveToNext();
             }
             workbook.write();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        catch (WriteException e) {
-        e.printStackTrace();
-        }
-        catch (Exception e) {
+        } catch (WriteException e) {
             e.printStackTrace();
-        }
-        finally {
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             db.close();
             helper.close();
             if (workbook != null) {
@@ -232,6 +264,35 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+
+
+    public void startAnimation() {
+
+        Animation anim_load_1 = AnimationUtils.loadAnimation(context, R.anim.anim_load_btn_1);
+        Animation anim_load_2 = AnimationUtils.loadAnimation(context, R.anim.anim_load_btn_2);
+
+        anim_load_1.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                load_button.setVisibility(Button.VISIBLE);
+                load_button.startAnimation(anim_load_2);
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        load_button.startAnimation(anim_load_1);
     }
 
 }

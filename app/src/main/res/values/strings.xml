@@ -2,7 +2,7 @@
     <string name="app_name">INventorY</string>
     <string name="action_settings">Settings</string>
 
-<!--    warnings  -->
+    <!--    warnings  -->
     <string name="warning_scan_error">Похоже, вы просканировали кота!</string>
     <string name="warning_no_id">Такого id нет в списке!!!</string>
     <string name="warning_many_id">Оу! Кажется у вас в базе не уникальные id. Я не знаю что выбрать.</string>
@@ -14,6 +14,7 @@
     <string name="charset_name">Cp1251</string>
     <string name="arg_for_scan_activity">selectionArg</string>
     <string name="unknown_category">Неизвестная категория</string>
+    <string name="load_file">Загрузить файл</string>
 
     <string name="base_name">Inventory</string>
     <string name="table_name">MTRs</string>
@@ -27,7 +28,6 @@
     <string name="column_name_DESCRIPTION_4">DESCRIPTION_4</string>
     <string name="column_name_DESCRIPTION_5">DESCRIPTION_5</string>
     <string name="column_name_DESCRIPTION_6">DESCRIPTION_6</string>
-
 
 
 </resources>

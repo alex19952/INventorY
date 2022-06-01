@@ -1,79 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <RelativeLayout
-            android:id="@+id/load_field"
-
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_centerHorizontal="true">
-
-            <ImageView
-                android:id="@+id/imageCSV"
-
-                android:layout_width="35dp"
-                android:layout_height="25dp"
-
-                android:layout_alignParentBottom="true"
-
-                android:layout_marginBottom="4dp"
-                android:src="@drawable/csv_icon" />
-
-            <TextView
-                android:id="@+id/textFilePath"
-                android:layout_width="200dp"
-
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-
-
-                android:layout_toRightOf="@+id/imageCSV"
-                android:text="Выберете файл" />
-
-            <Button
-                android:id="@+id/load_file_button"
-                android:layout_width="50dp"
-
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/textFilePath"
-
-                android:background="@drawable/load_icon"
-
-                android:onClick="onClickOpenFile" />
-
-
-        </RelativeLayout>
 
         <Button
             android:id="@+id/start_scan"
-            android:layout_width="150dp"
-
-            android:layout_height="150dp"
-            android:layout_below="@+id/load_field"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/load_button"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-
+            android:layout_marginTop="45dp"
             android:background="@drawable/scan_icon"
+            android:enabled="true"
+            android:onClick="onClickStartScan"
+            android:visibility="visible" />
 
-            android:onClick="onClickStartScan" />
+
+        <Button
+            android:id="@+id/load_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/load_button"
+            android:drawableLeft="@drawable/unformat_icon"
+            android:drawableRight="@drawable/arrow_icon"
+            android:ellipsize="start"
+            android:gravity="left|center"
+            android:maxLines="1"
+            android:onClick="onClickOpenFile"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:singleLine="true"
+            android:text="@string/load_file"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:visibility="invisible" />
+
 
         <Button
             android:layout_width="150dp"

@@ -1,5 +1,7 @@
 package amn.inventory;
+import android.annotation.SuppressLint;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -25,7 +27,6 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
         ImageView siber_view;
         ImageView end_siber_view;
 
-
         AdapterViewHolder(View itemView){
             super(itemView);
             id = (TextView)itemView.findViewById(R.id.numIDInRecyclerView);
@@ -43,39 +44,32 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
         return cursor.getCount();
     }
 
+    @NonNull
     @Override
     public AdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_for_scan_adapter, viewGroup, false); /////////// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! activity_main?
-        AdapterViewHolder viewHolder = new AdapterViewHolder(v);
-        return viewHolder;
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_for_scan_adapter, viewGroup, false);
+        return new AdapterViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(AdapterViewHolder viewHolder, int i) {
+
         cursor.moveToPosition(i);
-        int indext = cursor.getInt(1);
-        int x = cursor.getInt(3);
-        int y = cursor.getInt(4);
 
         viewHolder.id.setText(String.valueOf(cursor.getInt(1)));
         viewHolder.tittle.setText(cursor.getString(2));
+        viewHolder.quantity.setText(String.valueOf(cursor.getInt(3)));
+        viewHolder.current_quantity.setText(String.valueOf(cursor.getInt(4)));
 
-        viewHolder.quantity.setText(String.valueOf(x));
-        viewHolder.current_quantity.setText(String.valueOf(y));
-//        viewHolder.quantity.setText(String.valueOf(cursor.getInt(3)));
-//        viewHolder.current_quantity.setText(String.valueOf(cursor.getInt(4)));
-
-        if (y == x) {
+        if (cursor.getInt(4) == cursor.getInt(3)) {
             viewHolder.start_siber_view.setImageResource(R.drawable.right_id_icon_green);
             viewHolder.siber_view.setImageResource(R.drawable.siber_id_icon_green);
             viewHolder.end_siber_view.setImageResource(R.drawable.siber_end_id_icon_green);
-        }
-        else if (y > x) {
+        } else if (cursor.getInt(4) > cursor.getInt(3)) {
             viewHolder.start_siber_view.setImageResource(R.drawable.right_id_icon_red);
             viewHolder.siber_view.setImageResource(R.drawable.siber_id_icon_red);
             viewHolder.end_siber_view.setImageResource(R.drawable.siber_end_id_icon_red);
-        }
-        else {
+        } else {
             viewHolder.start_siber_view.setImageResource(R.drawable.right_id_icon_gray);
             viewHolder.siber_view.setImageResource(R.drawable.siber_id_icon_gray);
             viewHolder.end_siber_view.setImageResource(R.drawable.siber_end_id_icon_gray);
@@ -83,10 +77,11 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void changeAdapter(Cursor cursor){
         this.cursor = cursor;
         this.notifyDataSetChanged();

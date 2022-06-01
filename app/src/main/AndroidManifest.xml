@@ -13,16 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.INventorY">
+
         <activity
             android:name=".ListCategoriesActivity"
-            android:exported="false"
-            >
-        </activity>
-
+            android:exported="false" />
         <activity
             android:name=".ScanActivity"
             android:exported="false"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
