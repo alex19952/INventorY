@@ -34,8 +34,11 @@ class SQLiteHelper extends SQLiteOpenHelper {
 
     Context context;
 
+    SQLiteDatabase db;
+
     SQLiteHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
+        db = getWritableDatabase();
         this.context = context;
     }
 
@@ -47,11 +50,15 @@ class SQLiteHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
+    @Override
+    public synchronized void close() {
+        db.close();
+        super.close();
+    }
 
     // data ////////////////////////////////////////////////////////////////////////////////////////
 
-    public void createTableData (SQLiteDatabase db,
-                                 boolean use_category ,
+    public void createTableData (boolean use_category ,
                                  int quantity_optional_columns) {
         String sql_command =
                         "CREATE TABLE " + TABLE_DATA_NAME
@@ -70,7 +77,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(sql_command);
     }
 
-    public void putValuesInTableData(SQLiteDatabase db, Scanner scanner,
+    public void putValuesInTableData(Scanner scanner,
                                      int num_column_id,
                                      int num_column_name,
                                      int num_column_quantity,
@@ -102,7 +109,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void incrementScanQuantity(SQLiteDatabase db, int id) {
+    public void incrementScanQuantity(int id) {
         try {
             String sql_command = "UPDATE " + TABLE_DATA_NAME + " set " + SCANNED_QUANTITY + "=" + SCANNED_QUANTITY + "+1 where " + ID_FOR_SEARCH + "=" + String.valueOf(id);
             db.execSQL(sql_command);
@@ -113,11 +120,11 @@ class SQLiteHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getDataFromDataTable(SQLiteDatabase db) {
+    public Cursor getDataFromDataTable() {
         return db.query(TABLE_DATA_NAME, new String[] {"*"},null, null, null, null, null);
     }
 
-    public int entryData(SQLiteDatabase db, int id, String category) {
+    public int entryData(int id, String category) {
         // returns the number of occurrences of rows with the passed id
         Cursor cursor = db.query(TABLE_DATA_NAME, new String[] {ID_FOR_SEARCH},
                 ID_FOR_SEARCH + "=?" +
@@ -126,7 +133,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
         return cursor.getCount();
     }
 
-    public int entryData(SQLiteDatabase db, int id) {
+    public int entryData(int id) {
         // returns the number of occurrences of rows with the passed id
         Cursor cursor = db.query(TABLE_DATA_NAME, new String[] {ID_FOR_SEARCH},
                 ID_FOR_SEARCH + "=?", new String[] {String.valueOf(id)},
@@ -134,7 +141,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
         return cursor.getCount();
     }
 
-    public Cursor getCursorForCategories(SQLiteDatabase db, String filter) {
+    public Cursor getCursorForCategories(String filter) {
         return db.query(
                 TABLE_DATA_NAME,
                 new String[] {"_id", CATEGORY, "COUNT(*) as count"},
@@ -145,7 +152,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
                 null);
     }
 
-    public Cursor getCursorForScanning(SQLiteDatabase db, String selectionArg) {
+    public Cursor getCursorForScanning(String selectionArg) {
         if (selectionArg == null) {
             return db.query(TABLE_DATA_NAME, new String[] {"_id", ID_FOR_SEARCH, NAME_MTR, QUANTITY, SCANNED_QUANTITY},
                     null, null, null, null, null);
@@ -156,7 +163,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
         }
     }
 
-    public String getTittle(SQLiteDatabase db, int id) {
+    public String getTittle(int id) {
         Cursor cursor = db.query(TABLE_DATA_NAME, new String[] {NAME_MTR},
                 ID_FOR_SEARCH + "=?", new String[] {String.valueOf(id)},
                 null, null, null);
@@ -164,7 +171,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
         return cursor.getString(0);
     }
 
-    public boolean dataBaseIsLoad (SQLiteDatabase db) {
+    public boolean dataBaseIsLoad () {
         try {
             db.query(TABLE_DATA_NAME, new String[]{"*"}, null, null,
                     null, null, null);
@@ -174,7 +181,7 @@ class SQLiteHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteTableData(SQLiteDatabase db) {
+    public void deleteTableData() {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DATA_NAME + ";");
     }
 
@@ -182,14 +189,14 @@ class SQLiteHelper extends SQLiteOpenHelper {
 
     // tittles /////////////////////////////////////////////////////////////////////////////////////
 
-    public void createTableTittles(SQLiteDatabase db) {
+    public void createTableTittles() {
         String sql_command =
                 "CREATE TABLE " + TABLE_TITTLES_NAME
                         + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " + TITTLE + " TEXT);";
         db.execSQL(sql_command);
     }
 
-    public void putValuesInTableTittles(SQLiteDatabase db, Scanner scanner) {
+    public void putValuesInTableTittles(Scanner scanner) {
         String[] row;
         row = scanner.nextLine().split(";", -1);
         ContentValues contentValue = new ContentValues();
@@ -199,12 +206,12 @@ class SQLiteHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getDataFromTittlesTable(SQLiteDatabase db) {
+    public Cursor getDataFromTittlesTable() {
         return db.query(TABLE_TITTLES_NAME, new String[] {TITTLE}, null, null,
                 null, null, null);
     }
 
-    public void deleteTableTittles(SQLiteDatabase db) {
+    public void deleteTableTittles() {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TITTLES_NAME + ";");
     }
 

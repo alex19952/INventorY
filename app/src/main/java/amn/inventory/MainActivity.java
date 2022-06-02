@@ -52,13 +52,15 @@ public class MainActivity extends AppCompatActivity {
     Button scan_button;
     Button load_button;
 
+    SQLiteHelper helper;
+
     Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SQLiteHelper helper = new SQLiteHelper(this);
+        helper = new SQLiteHelper(this);
         SQLiteDatabase db = helper.getReadableDatabase();
-        database_has_been_loaded = helper.dataBaseIsLoad(db);
+        database_has_been_loaded = helper.dataBaseIsLoad();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
@@ -148,26 +150,22 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Scanner... scanners) {
             Scanner scanner = scanners[0];
-            SQLiteHelper helper = new SQLiteHelper(MainActivity.this);
-            SQLiteDatabase db = helper.getReadableDatabase();
 
-            helper.deleteTableData(db);
-            helper.deleteTableTittles(db);
+            helper.deleteTableData();
+            helper.deleteTableTittles();
 
-            helper.createTableData(db, true, 0);
-            helper.createTableTittles(db);
+            helper.createTableData(true, 0);
+            helper.createTableTittles();
 
 
             for (int i = 0; i < tittles; i++) {
                 scanner.nextLine();
             }
-            helper.putValuesInTableTittles(db, scanner);
-            helper.putValuesInTableData(db, scanner, NUM_COLUMN_ID, NUM_COLUMN_NAME,
+            helper.putValuesInTableTittles(scanner);
+            helper.putValuesInTableData(scanner, NUM_COLUMN_ID, NUM_COLUMN_NAME,
                     NUM_COLUMN_QUANTITY, NUM_COLUMN_PLACE, null);
 
             scanner.close();
-            db.close();
-            helper.close();
 
             return 0;
         }
@@ -217,8 +215,6 @@ public class MainActivity extends AppCompatActivity {
 
         String save_file = "/storage/emulated/0/Download/База МТР/excel.xls"; // FIXME
         WritableWorkbook workbook = null;
-        SQLiteHelper helper = new SQLiteHelper(this);
-        SQLiteDatabase db = helper.getReadableDatabase();
 
         try {
             workbook = Workbook.createWorkbook(new File(save_file));
@@ -226,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
             WritableSheet sheet = workbook.createSheet("Инвентаризация", 0);
 
 
-            Cursor cursor = helper.getDataFromTittlesTable(db);
+            Cursor cursor = helper.getDataFromTittlesTable();
             cursor.moveToFirst();
 
             for (int i = 0; i < cursor.getCount(); i++) {
@@ -237,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
 
 
-            cursor = helper.getDataFromDataTable(db);
+            cursor = helper.getDataFromDataTable();
             cursor.moveToFirst();
 
             for (int row = 1; row < cursor.getCount() + 1; row++) {
@@ -255,8 +251,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            db.close();
-            helper.close();
             if (workbook != null) {
                 try {
                     workbook.close();

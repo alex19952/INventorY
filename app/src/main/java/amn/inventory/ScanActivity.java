@@ -38,8 +38,7 @@ public class ScanActivity extends AppCompatActivity implements AdapterScanActivi
         SQLiteHelper helper = new SQLiteHelper(this);
         db = helper.getReadableDatabase();
         String arg = getIntent().getStringExtra(getString(R.string.arg_for_scan_activity));
-        Cursor cursor = helper.getCursorForScanning(
-                db, arg);
+        Cursor cursor = helper.getCursorForScanning(arg);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.MTR_RecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         AdapterScanActivity adapter = new AdapterScanActivity(cursor);
@@ -56,8 +55,8 @@ public class ScanActivity extends AppCompatActivity implements AdapterScanActivi
                     try {
                         strSequence = strSequence.substring(0, strSequence.length() - 1);
                         int intSequence = Integer.parseInt(strSequence);
-                        if (helper.entryData(db, intSequence, arg) == 0) {
-                            if (helper.entryData(db, intSequence) == 0) {
+                        if (helper.entryData(intSequence, arg) == 0) {
+                            if (helper.entryData(intSequence) == 0) {
                                 Toast toast = Toast.makeText(
                                         getApplicationContext(),
                                         getString(R.string.warning_no_id),
@@ -71,7 +70,7 @@ public class ScanActivity extends AppCompatActivity implements AdapterScanActivi
                                 toast.show();
                             }
                         }
-                        else if (helper.entryData(db, intSequence, arg) > 1) {
+                        else if (helper.entryData(intSequence, arg) > 1) {
                             Toast toast = Toast.makeText(
                                     getApplicationContext(),
                                     getString(R.string.warning_many_id),
@@ -79,10 +78,10 @@ public class ScanActivity extends AppCompatActivity implements AdapterScanActivi
                             toast.show();
                         }
                         else {
-                            helper.incrementScanQuantity(db, intSequence);
-                            Cursor cursor = helper.getCursorForScanning(db, arg);
+                            helper.incrementScanQuantity(intSequence);
+                            Cursor cursor = helper.getCursorForScanning(arg);
                             adapter.changeAdapter(cursor);
-                            last_codeTextView.setText(helper.getTittle(db, intSequence));
+                            last_codeTextView.setText(helper.getTittle(intSequence));
                             last_codeTextView.setSelected(true);
                         }
                     }

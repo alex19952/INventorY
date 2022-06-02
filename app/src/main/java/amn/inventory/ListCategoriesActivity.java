@@ -29,7 +29,7 @@ public class ListCategoriesActivity extends AppCompatActivity implements Adapter
         SQLiteDatabase db = helper.getReadableDatabase();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewListOfCategories);
         recyclerView.setLayoutManager((new LinearLayoutManager(this)));
-        adapter = new AdapterListCategoriesActivity(helper.getCursorForCategories(db, ""));
+        adapter = new AdapterListCategoriesActivity(helper.getCursorForCategories(""));
         adapter.setOnCardClickListener(this);
         recyclerView.setAdapter(adapter);
     }
@@ -48,7 +48,7 @@ public class ListCategoriesActivity extends AppCompatActivity implements Adapter
             @Override
             public boolean onQueryTextChange(String s) {
                 SQLiteDatabase db = helper.getReadableDatabase();
-                adapter.changeAdapter(helper.getCursorForCategories(db, s));
+                adapter.changeAdapter(helper.getCursorForCategories(s));
                 return false;
             }
         });
