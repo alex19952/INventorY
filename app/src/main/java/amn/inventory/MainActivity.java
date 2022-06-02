@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 
+import amn.inventory.main.AnimationLauncher;
 import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
@@ -38,6 +39,8 @@ import jxl.write.WriteException;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    private boolean database_has_been_loaded;
 
     private int NUM_COLUMN_ID = 0;
     private int NUM_COLUMN_NAME = 4;
@@ -53,13 +56,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SQLiteHelper helper = new SQLiteHelper(this);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        database_has_been_loaded = helper.dataBaseIsLoad(db);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
         scan_button = findViewById(R.id.start_scan);
         load_button = findViewById(R.id.load_button);
         startAnimation();
-
     }
 
     public void onClickOpenFile(View view) {
@@ -113,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < path.length - 1; i++) {
                     text_load_btn += path[i];
                 }
-                Button load_button = (Button) findViewById(R.id.load_button);
                 load_button.setText(text_load_btn);
                 String format = path[path.length - 1];
                 if (format.equals("csv")) {
@@ -266,14 +270,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
     public void startAnimation() {
-
         Animation anim_load_1 = AnimationUtils.loadAnimation(context, R.anim.anim_load_btn_1);
-        Animation anim_load_2 = AnimationUtils.loadAnimation(context, R.anim.anim_load_btn_2);
+        Animation anim_scan_1 = AnimationUtils.loadAnimation(context, R.anim.anim_scan_btn_1);
 
         anim_load_1.setAnimationListener(new Animation.AnimationListener() {
+
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -282,8 +284,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 load_button.setVisibility(Button.VISIBLE);
-                load_button.startAnimation(anim_load_2);
-
+                if (database_has_been_loaded) {
+                    scan_button.startAnimation(anim_scan_1);
+                    scan_button.setVisibility(Button.VISIBLE);
+                }
             }
 
             @Override

@@ -18,7 +18,7 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
         this.cursor = cursor;
     }
 
-    public static class AdapterViewHolder extends  RecyclerView.ViewHolder{
+    public static class AdapterViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener{
         TextView id;
         TextView tittle;
         TextView quantity;
@@ -26,6 +26,7 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
         ImageView start_siber_view;
         ImageView siber_view;
         ImageView end_siber_view;
+        View layout;
 
         AdapterViewHolder(View itemView){
             super(itemView);
@@ -36,6 +37,13 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
             start_siber_view = (ImageView)itemView.findViewById(R.id.rightIdIcon);
             siber_view = (ImageView)itemView.findViewById(R.id.siberIdIcon);
             end_siber_view = (ImageView) itemView.findViewById(R.id.siberEndIdIcon);
+            layout = (View) itemView.findViewById(R.id.rowOfScanAdapter);
+            layout.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.onCardClick(itemView, (String) id.getText());
         }
     }
 
@@ -85,5 +93,14 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
     public void changeAdapter(Cursor cursor){
         this.cursor = cursor;
         this.notifyDataSetChanged();
+    }
+
+    private static AdapterScanActivity.OnCardClickListener mListener;
+    interface OnCardClickListener {
+        void onCardClick(View view,  String id);
+    }
+
+    public void setOnCardClickListener(AdapterScanActivity.OnCardClickListener listener) {
+        mListener = listener;
     }
 }

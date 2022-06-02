@@ -2,6 +2,7 @@ package amn.inventory;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBar;
@@ -14,11 +15,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ScanActivity extends AppCompatActivity {
+public class ScanActivity extends AppCompatActivity implements AdapterScanActivity.OnCardClickListener {
 
     private SQLiteDatabase db;
 
@@ -36,11 +38,12 @@ public class ScanActivity extends AppCompatActivity {
         SQLiteHelper helper = new SQLiteHelper(this);
         db = helper.getReadableDatabase();
         String arg = getIntent().getStringExtra(getString(R.string.arg_for_scan_activity));
-        Cursor cursor = helper.getCursorOnScaning(
+        Cursor cursor = helper.getCursorForScanning(
                 db, arg);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.MTR_RecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         AdapterScanActivity adapter = new AdapterScanActivity(cursor);
+        adapter.setOnCardClickListener(this);
         recyclerView.setAdapter(adapter);
 
         TextWatcher change1 = new TextWatcher() {
@@ -77,9 +80,10 @@ public class ScanActivity extends AppCompatActivity {
                         }
                         else {
                             helper.incrementScanQuantity(db, intSequence);
-                            Cursor cursor = helper.getCursorOnScaning(db, arg);
+                            Cursor cursor = helper.getCursorForScanning(db, arg);
                             adapter.changeAdapter(cursor);
-                            last_codeTextView.setText(strSequence);
+                            last_codeTextView.setText(helper.getTittle(db, intSequence));
+                            last_codeTextView.setSelected(true);
                         }
                     }
                     catch  (Exception e) {
@@ -96,6 +100,13 @@ public class ScanActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {}
         };
         MTR_codeEditText.addTextChangedListener(change1);
+    }
+
+    @Override
+    public void onCardClick(View view, String id) {
+        Intent intent = new Intent(this, DescriptionActivity.class);
+        intent.putExtra("azaza", id);
+        startActivity(intent);
     }
 
     @Override

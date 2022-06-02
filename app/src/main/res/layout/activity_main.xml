@@ -27,7 +27,7 @@
             android:background="@drawable/scan_icon"
             android:enabled="true"
             android:onClick="onClickStartScan"
-            android:visibility="visible" />
+            android:visibility="invisible" />
 
 
         <Button
@@ -58,7 +58,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:onClick="onClickSave"
-            android:text="save" />
+            android:text="save"
+            android:visibility="invisible"/>
 
 
     </RelativeLayout>

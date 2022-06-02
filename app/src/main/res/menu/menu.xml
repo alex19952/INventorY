@@ -8,4 +8,10 @@
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView"
         />
+    <item
+        android:icon="@drawable/save_icon"
+        android:title="Ssave"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.AppCompatImageView"
+        />
 </menu>
