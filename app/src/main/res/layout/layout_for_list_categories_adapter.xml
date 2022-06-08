@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    android:id="@+id/rowOfListCategoriesAdapter"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/rowOfListCategoriesAdapter"
 
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
 
@@ -22,28 +22,45 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_centerVertical="true"
-            />
+            android:layout_centerVertical="true" />
 
         <TextView
             android:id="@+id/textPositions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14dp"
             android:layout_below="@id/textTittleInRowOfListCategories"
             android:text="Позиций: "
-            />
+            android:textSize="14dp" />
 
         <TextView
             android:id="@+id/textQuantityPositions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14dp"
             android:layout_below="@id/textTittleInRowOfListCategories"
             android:layout_toRightOf="@id/textPositions"
-            />
-
+            android:textSize="14dp" />
 
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/wrongIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/wrong_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/completeIcon"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
+
+    <ImageView
+        android:id="@+id/completeIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/complete_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>

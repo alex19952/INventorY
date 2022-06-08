@@ -1,13 +1,12 @@
-package amn.inventory;
+package amn.inventory.activities;
+
+import static amn.inventory.R.drawable.unformat_icon;
 
 import android.Manifest;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -18,24 +17,19 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 
-import amn.inventory.main.AnimationLauncher;
-import jxl.Workbook;
-import jxl.write.Label;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
-import jxl.write.WriteException;
+import amn.inventory.R;
+import amn.inventory.helpers.SQLiteHelper;
+import amn.inventory.helpers.SettingsHelper;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -54,25 +48,42 @@ public class MainActivity extends AppCompatActivity {
 
     SQLiteHelper helper;
 
+    SharedPreferences preferences;
+
     Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        helper = new SQLiteHelper(this);
-        SQLiteDatabase db = helper.getReadableDatabase();
-        database_has_been_loaded = helper.dataBaseIsLoad();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        preferences = getSharedPreferences(SettingsHelper.settings_name, Context.MODE_PRIVATE);
+        preferences.edit().putBoolean(SettingsHelper.use_category, true).commit(); // FIXME: 08.06.2022 
+
+        helper = new SQLiteHelper(this);
+
+        database_has_been_loaded = helper.isDataBaseLoad();
+
         context = this;
-        scan_button = findViewById(R.id.start_scan);
         load_button = findViewById(R.id.load_button);
+        if (database_has_been_loaded){
+            load_button.setText(preferences.getString(SettingsHelper.file_path, getString(R.string.load_file_btn_default)));
+            load_button.setCompoundDrawablesWithIntrinsicBounds(
+                    preferences.getInt(SettingsHelper.file_format_drwbl, unformat_icon),
+                    0,
+                    R.drawable.reload_icon,
+                    0);
+        }
+
+        scan_button = findViewById(R.id.start_scan);
+
         startAnimation();
     }
 
     public void onClickOpenFile(View view) {
         ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                1);
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
     }
 
     @Override
@@ -80,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1: {
-
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -92,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
                     startActivityForResult(chooseFile, PICKFILE_RESULT_CODE);
 
                 } else {
-
                     Toast.makeText(MainActivity.this, R.string.warning_read_external_storage,
                             Toast.LENGTH_SHORT).show();
                 }
@@ -120,10 +129,11 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < path.length - 1; i++) {
                     text_load_btn += path[i];
                 }
-                load_button.setText(text_load_btn);
+                preferences.edit().putString(SettingsHelper.file_path, text_load_btn).commit();
                 String format = path[path.length - 1];
                 if (format.equals("csv")) {
                     load_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.csv_icon, 0, R.drawable.reload_icon, 0);
+                    preferences.edit().putInt(SettingsHelper.file_format_drwbl, R.drawable.csv_icon).commit();
                 }
 
                 BufferedReader reader = new BufferedReader(
@@ -145,25 +155,30 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             progressBar.setVisibility(ProgressBar.VISIBLE);
+            if (database_has_been_loaded) {
+                scan_button.setEnabled(false);
+                Animation scan_anim_2 = AnimationUtils.loadAnimation(context, R.anim.anim_scan_btn_2);
+                scan_button.startAnimation(scan_anim_2);
+                scan_button.setVisibility(Button.INVISIBLE);
+                database_has_been_loaded = false;
+            }
         }
 
         @Override
         protected Integer doInBackground(Scanner... scanners) {
             Scanner scanner = scanners[0];
 
-            helper.deleteTableData();
-            helper.deleteTableTittles();
+            helper.deleteTables();
 
-            helper.createTableData(true, 0);
-            helper.createTableTittles();
-
+            helper.createTables(true, 0);
 
             for (int i = 0; i < tittles; i++) {
                 scanner.nextLine();
             }
             helper.putValuesInTableTittles(scanner);
-            helper.putValuesInTableData(scanner, NUM_COLUMN_ID, NUM_COLUMN_NAME,
+            helper.putValuesInDataTable(scanner, NUM_COLUMN_ID, NUM_COLUMN_NAME,
                     NUM_COLUMN_QUANTITY, NUM_COLUMN_PLACE, null);
+            helper.putValuesInCategoriesTable();
 
             scanner.close();
 
@@ -178,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer result) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
+            load_button.setText(preferences.getString(SettingsHelper.file_path, getString(R.string.load_file_btn_default)));
             Animation anim_scan_1 = AnimationUtils.loadAnimation(context, R.anim.anim_scan_btn_1);
 
             anim_scan_1.setAnimationListener(new Animation.AnimationListener() {
@@ -197,71 +213,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             scan_button.startAnimation(anim_scan_1);
+            database_has_been_loaded = true;
         }
     }
-
 
     public void onClickStartScan(View view) {
+        Intent intent;
         if (divided_into_categories) {
-            Intent intent = new Intent(MainActivity.this, ListCategoriesActivity.class);
-            startActivity(intent);
+            intent = new Intent(MainActivity.this, CategoriesActivity.class);
         } else {
-            Intent intent = new Intent(MainActivity.this, ScanActivity.class);
-            startActivity(intent);
+            intent = new Intent(MainActivity.this, ScanActivity.class);
         }
-    }
-
-    public void onClickSave(View view) {
-
-        String save_file = "/storage/emulated/0/Download/База МТР/excel.xls"; // FIXME
-        WritableWorkbook workbook = null;
-
-        try {
-            workbook = Workbook.createWorkbook(new File(save_file));
-            MediaScannerConnection.scanFile(this, new String[]{save_file}, null, null);
-            WritableSheet sheet = workbook.createSheet("Инвентаризация", 0);
-
-
-            Cursor cursor = helper.getDataFromTittlesTable();
-            cursor.moveToFirst();
-
-            for (int i = 0; i < cursor.getCount(); i++) {
-                Label label = new Label(i, 0, cursor.getString(0));
-                sheet.addCell(label);
-                cursor.moveToNext();
-            }
-            cursor.close();
-
-
-            cursor = helper.getDataFromDataTable();
-            cursor.moveToFirst();
-
-            for (int row = 1; row < cursor.getCount() + 1; row++) {
-                for (int column = 0; column < cursor.getColumnCount(); column++) {
-                    Label label = new Label(column, row, cursor.getString(column));
-                    sheet.addCell(label);
-                }
-                cursor.moveToNext();
-            }
-            workbook.write();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (WriteException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (workbook != null) {
-                try {
-                    workbook.close();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (WriteException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        startActivity(intent);
     }
 
     public void startAnimation() {

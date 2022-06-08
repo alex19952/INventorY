@@ -87,7 +87,7 @@
                 android:layout_toRightOf="@id/rightIdIcon"
                 android:layout_toLeftOf="@+id/siberEndIdIcon"
                 android:scaleType="fitXY"
-                android:src="@drawable/siber_id_icon_gray"
+                android:src="@drawable/saber_id_icon_gray"
                 />
 
             <ImageView
@@ -98,7 +98,7 @@
                 android:layout_alignBottom="@id/linerLayoutIdText"
                 android:layout_alignParentRight="true"
                 android:scaleType="fitStart"
-                android:src="@drawable/siber_end_id_icon_gray"
+                android:src="@drawable/saber_end_id_icon_gray"
                 />
 
         </RelativeLayout>

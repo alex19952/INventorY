@@ -1,4 +1,4 @@
-package amn.inventory;
+package amn.inventory.adapters;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -10,19 +10,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import amn.inventory.R;
+import amn.inventory.helpers.DatabaseStructure;
+
 
 public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivity.AdapterViewHolder> {
     Cursor cursor;
 
-    AdapterScanActivity(Cursor cursor) {
+    public AdapterScanActivity(Cursor cursor) {
         this.cursor = cursor;
     }
 
     public static class AdapterViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener{
         TextView id;
-        TextView tittle;
+        TextView title;
         TextView quantity;
-        TextView current_quantity;
+        TextView scanned_quantity;
         ImageView start_siber_view;
         ImageView siber_view;
         ImageView end_siber_view;
@@ -31,9 +34,9 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
         AdapterViewHolder(View itemView){
             super(itemView);
             id = (TextView)itemView.findViewById(R.id.numIDInRecyclerView);
-            tittle = (TextView)itemView.findViewById(R.id.textTittleInRecyclerView);
+            title = (TextView)itemView.findViewById(R.id.textTittleInRecyclerView);
             quantity = (TextView)itemView.findViewById(R.id.textQuantityInRecyclerView);
-            current_quantity = (TextView)itemView.findViewById(R.id.textCurrentQuantityInRecyclerView);
+            scanned_quantity = (TextView)itemView.findViewById(R.id.textCurrentQuantityInRecyclerView);
             start_siber_view = (ImageView)itemView.findViewById(R.id.rightIdIcon);
             siber_view = (ImageView)itemView.findViewById(R.id.siberIdIcon);
             end_siber_view = (ImageView) itemView.findViewById(R.id.siberEndIdIcon);
@@ -63,24 +66,32 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
     public void onBindViewHolder(AdapterViewHolder viewHolder, int i) {
 
         cursor.moveToPosition(i);
+        int index = cursor.getColumnIndex(DatabaseStructure.DataTable.Columns.search_id);
+        viewHolder.id.setText(String.valueOf(cursor.getInt(index)));
 
-        viewHolder.id.setText(String.valueOf(cursor.getInt(1)));
-        viewHolder.tittle.setText(cursor.getString(2));
-        viewHolder.quantity.setText(String.valueOf(cursor.getInt(3)));
-        viewHolder.current_quantity.setText(String.valueOf(cursor.getInt(4)));
+        index = cursor.getColumnIndex(DatabaseStructure.DataTable.Columns.title);
+        viewHolder.title.setText(cursor.getString(index));
 
-        if (cursor.getInt(4) == cursor.getInt(3)) {
+        index = cursor.getColumnIndex(DatabaseStructure.DataTable.Columns.quantity);
+        viewHolder.quantity.setText(String.valueOf(cursor.getInt(index)));
+
+        index = cursor.getColumnIndex(DatabaseStructure.DataTable.Columns.scanned_quantity);
+        viewHolder.scanned_quantity.setText(String.valueOf(cursor.getInt(index)));
+
+        index = cursor.getColumnIndex(DatabaseStructure.DataTable.Columns.result);
+        int result = cursor.getInt(index);
+        if (result == 0) {
             viewHolder.start_siber_view.setImageResource(R.drawable.right_id_icon_green);
-            viewHolder.siber_view.setImageResource(R.drawable.siber_id_icon_green);
-            viewHolder.end_siber_view.setImageResource(R.drawable.siber_end_id_icon_green);
-        } else if (cursor.getInt(4) > cursor.getInt(3)) {
+            viewHolder.siber_view.setImageResource(R.drawable.saber_id_icon_green);
+            viewHolder.end_siber_view.setImageResource(R.drawable.saber_end_id_icon_green);
+        } else if (result < 0) {
             viewHolder.start_siber_view.setImageResource(R.drawable.right_id_icon_red);
-            viewHolder.siber_view.setImageResource(R.drawable.siber_id_icon_red);
-            viewHolder.end_siber_view.setImageResource(R.drawable.siber_end_id_icon_red);
+            viewHolder.siber_view.setImageResource(R.drawable.saber_id_icon_red);
+            viewHolder.end_siber_view.setImageResource(R.drawable.saber_end_id_icon_red);
         } else {
             viewHolder.start_siber_view.setImageResource(R.drawable.right_id_icon_gray);
-            viewHolder.siber_view.setImageResource(R.drawable.siber_id_icon_gray);
-            viewHolder.end_siber_view.setImageResource(R.drawable.siber_end_id_icon_gray);
+            viewHolder.siber_view.setImageResource(R.drawable.saber_id_icon_gray);
+            viewHolder.end_siber_view.setImageResource(R.drawable.saber_end_id_icon_gray);
         }
     }
 
@@ -96,7 +107,7 @@ public class AdapterScanActivity extends RecyclerView.Adapter<AdapterScanActivit
     }
 
     private static AdapterScanActivity.OnCardClickListener mListener;
-    interface OnCardClickListener {
+    public interface OnCardClickListener {
         void onCardClick(View view,  String id);
     }
 

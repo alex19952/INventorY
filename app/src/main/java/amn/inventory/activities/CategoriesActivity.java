@@ -1,7 +1,7 @@
-package amn.inventory;
+package amn.inventory.activities;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,26 +12,38 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class ListCategoriesActivity extends AppCompatActivity implements AdapterListCategoriesActivity.OnCardClickListener {
+import amn.inventory.adapters.AdapterCategoriesActivity;
+import amn.inventory.R;
+import amn.inventory.helpers.SQLiteHelper;
 
+public class CategoriesActivity extends AppCompatActivity implements AdapterCategoriesActivity.OnCardClickListener {
+
+    ActionBar toolbar;
     RecyclerView recyclerView;
-    AdapterListCategoriesActivity adapter;
+    AdapterCategoriesActivity adapter;
     SQLiteHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_categories);
-        ActionBar toolbar = getSupportActionBar();
+        setContentView(R.layout.activity_categories);
+        toolbar = getSupportActionBar();
         assert toolbar != null;
         toolbar.setDisplayHomeAsUpEnabled(true);
+        toolbar.setTitle(R.string.categories_activity_title);
         helper = new SQLiteHelper(this);
-        SQLiteDatabase db = helper.getReadableDatabase();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewListOfCategories);
         recyclerView.setLayoutManager((new LinearLayoutManager(this)));
-        adapter = new AdapterListCategoriesActivity(helper.getCursorForCategories(""));
+        adapter = new AdapterCategoriesActivity(helper.getCursorForCategories(""));
         adapter.setOnCardClickListener(this);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Cursor cursor = helper.getCursorForCategories("");
+        adapter.changeAdapter(cursor);
     }
 
     @Override
@@ -47,7 +59,6 @@ public class ListCategoriesActivity extends AppCompatActivity implements Adapter
 
             @Override
             public boolean onQueryTextChange(String s) {
-                SQLiteDatabase db = helper.getReadableDatabase();
                 adapter.changeAdapter(helper.getCursorForCategories(s));
                 return false;
             }

@@ -10,24 +10,18 @@
         перенести и прибавить или прибавить оставив в той категории или ничего)</string>
     <string name="warning_read_external_storage">Для загрузки данных необходимо
         предоставить доступ к памяти устройства.</string>
+    <string name="onPause_wrong">Ошибка сохранения результата// ScanActivities//onPause</string>
 
     <string name="charset_name">Cp1251</string>
     <string name="arg_for_scan_activity">selectionArg</string>
     <string name="unknown_category">Неизвестная категория</string>
-    <string name="load_file">Загрузить файл</string>
 
-    <string name="base_name">Inventory</string>
-    <string name="table_name">MTRs</string>
-    <string name="column_name_ID">ID_FOR_SEARCH</string>
-    <string name="column_name_NAME">NAME_MTR</string>
-    <string name="column_name_QUANTITY">QUANTITY</string>
-    <string name="column_name_PLACE">PLACE</string>
-    <string name="column_name_DESCRIPTION_1">DESCRIPTION_1</string>
-    <string name="column_name_DESCRIPTION_2">DESCRIPTION_2</string>
-    <string name="column_name_DESCRIPTION_3">DESCRIPTION_3</string>
-    <string name="column_name_DESCRIPTION_4">DESCRIPTION_4</string>
-    <string name="column_name_DESCRIPTION_5">DESCRIPTION_5</string>
-    <string name="column_name_DESCRIPTION_6">DESCRIPTION_6</string>
+    <!--    buttons-->
+    <string name="load_file_btn_default">Загрузить файл</string>
+
+    <!--    titles-->
+    <string name="categories_activity_title">Категории</string>
+    <string name="description_activity_title">Описание</string>
 
 
 </resources>

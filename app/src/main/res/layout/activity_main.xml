@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
 
 
     <RelativeLayout
@@ -45,22 +45,10 @@
             android:paddingLeft="25dp"
             android:paddingRight="25dp"
             android:singleLine="true"
-            android:text="@string/load_file"
+            android:text="@string/load_file_btn_default"
             android:textAllCaps="false"
             android:textSize="15sp"
             android:visibility="invisible" />
-
-
-        <Button
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_below="@id/start_scan"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:onClick="onClickSave"
-            android:text="save"
-            android:visibility="invisible"/>
-
 
     </RelativeLayout>
 

@@ -14,17 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.INventorY">
         <activity
-            android:name=".DescriptionActivity"
+            android:name=".activities.DescriptionActivity"
             android:exported="false" />
         <activity
-            android:name=".ListCategoriesActivity"
+            android:name=".activities.CategoriesActivity"
             android:exported="false" />
         <activity
-            android:name=".ScanActivity"
+            android:name=".activities.ScanActivity"
             android:exported="false"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

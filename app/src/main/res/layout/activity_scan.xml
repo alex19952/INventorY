@@ -5,7 +5,7 @@
         android:layout_height="wrap_content"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_below="@+id/last_codeTextView"
-        tools:context=".ScanActivity">
+        tools:context=".activities.ScanActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/MTR_RecyclerView"
@@ -28,12 +28,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/last_scan_view"
-        android:text=""
         android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
         android:maxLines="1"
         android:singleLine="true"
-        />
+        android:text="" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/MTR_RecyclerView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="onScanCamera"
+        />
 
 
 
