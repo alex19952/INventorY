@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, R.string.warning_read_external_storage,
                             Toast.LENGTH_SHORT).show();
                 }
-//                return;
+                return;
             }
         }
     }
@@ -254,6 +254,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         load_button.startAnimation(anim_load_1);
+    }
+
+    public void onClickSettings (View view){
+        Intent intent;
+        intent = new Intent(MainActivity.this, SettingActivity.class);
+        startActivity(intent);
     }
 
 }

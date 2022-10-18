@@ -22,6 +22,12 @@
     <!--    titles-->
     <string name="categories_activity_title">Категории</string>
     <string name="description_activity_title">Описание</string>
+    <string name="settings_activity_title">Настройки</string>
 
+    <!--    settings activity-->
+    <string name="id_field">id:</string>
+    <string name="title_field">Наименование:</string>
+    <string name="quantity_field">Количество:</string>
+    <string name="categories_field">Категория:</string>
 
 </resources>
