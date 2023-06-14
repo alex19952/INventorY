@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,17 +22,28 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.lang3.ObjectUtils;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 import amn.inventory.adapters.AdapterScanActivity;
 import amn.inventory.R;
 import amn.inventory.helpers.DatabaseStructure;
 import amn.inventory.helpers.SQLiteHelper;
 import amn.inventory.helpers.SettingsHelper;
+import amn.inventory.model.ISaveHelper;
+import amn.inventory.model.SaveCSV;
 
 public class ScanActivity extends AppCompatActivity implements AdapterScanActivity.OnCardClickListener {
 
@@ -43,6 +55,9 @@ public class ScanActivity extends AppCompatActivity implements AdapterScanActivi
     AdapterScanActivity adapter;
     String category_name;
     SharedPreferences preferences;
+    ISaveHelper saveHelper;
+    private static final int REQUEST_CODE_SCAN = 0;
+    private static final int REQUEST_CODE_CREATE_FILE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +71,6 @@ public class ScanActivity extends AppCompatActivity implements AdapterScanActivi
         toolbar = getSupportActionBar();
         toolbar.setDisplayHomeAsUpEnabled(true);
         toolbar.setTitle(category_name);
-
 
         editTextView = (EditText) findViewById((R.id.MTR_codeEditText));
         editTextView.requestFocus();
@@ -72,6 +86,8 @@ public class ScanActivity extends AppCompatActivity implements AdapterScanActivi
         adapter = new AdapterScanActivity(cursor);
         adapter.setOnCardClickListener(this);
         recyclerView.setAdapter(adapter);
+
+        saveHelper = new SaveCSV(helper);
 
         TextWatcher change1 = new TextWatcher() {
             @Override
@@ -163,6 +179,20 @@ public class ScanActivity extends AppCompatActivity implements AdapterScanActivi
                 return false;
             }
         });
+
+        MenuItem saveItem = menu.findItem(R.id.save_button);
+        saveItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.setType("text/csv");
+                intent.putExtra(Intent.EXTRA_TITLE, "result.csv");
+                startActivityForResult(intent, REQUEST_CODE_CREATE_FILE);
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -181,14 +211,35 @@ public class ScanActivity extends AppCompatActivity implements AdapterScanActivi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
+
+        if (requestCode == REQUEST_CODE_SCAN) {
             if (resultCode == RESULT_OK) {
                 String contents = data.getStringExtra("SCAN_RESULT");
                 contents += "\n";
                 editTextView.setText(contents);
+            } else if (resultCode == RESULT_CANCELED) {
+                // Обработка отмены сканирования
             }
-            if(resultCode == RESULT_CANCELLED){
-                //handle cancel
+
+        } else if (requestCode == REQUEST_CODE_CREATE_FILE) {
+
+            if (resultCode == RESULT_OK) {
+                if (data != null && data.getData() != null) {
+                    Uri uri = data.getData();
+                    try {
+                        OutputStream output = getContentResolver().openOutputStream(uri);
+                        Writer writer = new OutputStreamWriter(output, Charset.forName("CP1251"));
+                        writer.write(saveHelper.getCSV());
+                        writer.flush();
+                        writer.close();
+                        Toast.makeText(this, "Файл успешно сохранен", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Ошибка сохранения файла", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (resultCode == RESULT_CANCELED) {
+                    // Обработка отмены сохранения файла
+                }
             }
         }
     }
@@ -213,20 +264,20 @@ public class ScanActivity extends AppCompatActivity implements AdapterScanActivi
                     complete = false;
                 }
             }
-            if (complete != null) {
-                helper.setComplete(category_name, complete);
-            }
-            else {
-                Toast.makeText(this, R.string.onPause_wrong,
-                        Toast.LENGTH_SHORT).show();
-            }
-            if (wrong != null) {
-                helper.setWrong(category_name, wrong);
-            }
-            else {
-                Toast.makeText(this, R.string.onPause_wrong,
-                        Toast.LENGTH_SHORT).show();
-            }
+//            if (complete != null) {
+//                helper.setComplete(category_name, complete);
+//            }
+//            else {
+//                Toast.makeText(this, R.string.onPause_wrong,
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//            if (wrong != null) {
+//                helper.setWrong(category_name, wrong);
+//            }
+//            else {
+//                Toast.makeText(this, R.string.onPause_wrong,
+//                        Toast.LENGTH_SHORT).show();
+//            }
         }
         super.onPause();
     }

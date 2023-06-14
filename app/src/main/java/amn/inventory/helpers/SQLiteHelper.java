@@ -324,4 +324,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 new String[] {category_name});
     }
 
+    public Cursor getAllData() {
+        return db.rawQuery("SELECT * FROM " + DatabaseStructure.DataTable.tableName, null);
+    }
+
 }

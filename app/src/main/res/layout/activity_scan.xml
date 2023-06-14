@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_below="@+id/last_codeTextView"
-        tools:context=".activities.ScanActivity">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/last_codeTextView"
+    tools:context=".activities.ScanActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/MTR_RecyclerView"
@@ -20,8 +20,7 @@
         android:id="@+id/MTR_codeEditText"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:text=""
-        />
+        android:text="" />
 
     <TextView
         android:id="@+id/last_codeTextView"
@@ -32,7 +31,8 @@
         android:marqueeRepeatLimit="marquee_forever"
         android:maxLines="1"
         android:singleLine="true"
-        android:text="" />
+        android:text=""
+        android:onClick="onScanCamera"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -40,9 +40,9 @@
         android:layout_above="@+id/MTR_RecyclerView"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:background="@drawable/camera"
         android:onClick="onScanCamera"
-        />
-
+        android:visibility="gone" />
 
 
 </RelativeLayout>
